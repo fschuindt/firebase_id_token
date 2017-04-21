@@ -23,7 +23,7 @@ RSpec.describe FirebaseIdToken do
     end
   end
 
-  describe '.reset' do
+  describe '#reset' do
     before :each do
       FirebaseIdToken.configure do |config|
         config.project_ids = 1

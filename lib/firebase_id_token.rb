@@ -5,7 +5,7 @@ require 'firebase_id_token/signature'
 
 # FirebaseIdToken::Certificates.download
 # FirebaseIdToken::Certificates.download!
-# FirebaseIdToken::Certificates.x509_certs
+# FirebaseIdToken::Certificates.x509
 # FirebaseIdToken::Signature.verify(token)
 module FirebaseIdToken
   class << self
