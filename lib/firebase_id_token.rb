@@ -5,10 +5,12 @@ require 'firebase_id_token/configuration'
 require 'firebase_id_token/certificates'
 require 'firebase_id_token/signature'
 
-# FirebaseIdToken::Certificates.download
-# FirebaseIdToken::Certificates.download!
+# FirebaseIdToken::Certificates.request
+# FirebaseIdToken::Certificates.request_anyway
+# FirebaseIdToken::Certificates.present?
 # FirebaseIdToken::Certificates.x509
 # FirebaseIdToken::Signature.verify(token)
+
 module FirebaseIdToken
   class << self
     attr_writer :configuration
