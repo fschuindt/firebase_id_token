@@ -56,6 +56,12 @@ module FirebaseIdToken
         expect{ described_class.request_anyway }.
           to raise_error(Exceptions::Certificates::TimeToLiveError)
       end
+
+      it 'raises a error when HTTP response code is other than 200' do
+        allow(response).to receive(:code) { 401 }
+        expect{ described_class.request_anyway }.
+          to raise_error(Exceptions::Certificates::RequestCodeError)
+      end
     end
 
     describe '#present?' do
@@ -71,9 +77,8 @@ module FirebaseIdToken
 
     describe '#x509' do
       context 'before requesting certificates' do
-        it 'raises a error' do
-          expect{ described_class.x509 }.
-            to raise_error(Exceptions::Certificates::NoEntityError)
+        it 'returns a empty Array' do
+          expect(described_class.x509).to eq([])
         end
       end
 
