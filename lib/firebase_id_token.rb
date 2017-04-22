@@ -1,4 +1,6 @@
 require 'firebase_id_token/version'
+require 'firebase_id_token/exceptions/certificates/no_entity_error'
+require 'firebase_id_token/exceptions/certificates/time_to_live_error'
 require 'firebase_id_token/configuration'
 require 'firebase_id_token/certificates'
 require 'firebase_id_token/signature'
