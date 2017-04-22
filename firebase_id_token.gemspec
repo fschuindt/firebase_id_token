@@ -33,4 +33,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.14'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
+
+  spec.add_dependency 'redis', '~> 3.3.3'
+  spec.add_dependency 'redis-namespace', '~> 1.5.3'
+  spec.add_dependency 'httparty', '~> 0.14.0'
+  spec.add_dependency 'jwt', '~> 1.5.6'
 end
