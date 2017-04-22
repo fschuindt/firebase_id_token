@@ -11,8 +11,8 @@ module FirebaseIdToken
     describe '.project_ids=' do
       it 'changes default values' do
         config = Configuration.new
-        config.project_ids = 1
-        expect(config.project_ids).to eq(1)
+        config.project_ids = String.new
+        expect(config.project_ids).to be_a(String)
       end
     end
 
