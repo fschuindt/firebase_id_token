@@ -9,9 +9,11 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Fernando Schuindt']
   spec.email         = ['f.schuindtcs@gmail.com']
 
-  spec.summary       = %q{Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{Write a longer description or delete this line.}
-  spec.homepage      = 'http://google.com'
+  spec.summary       = 'A Firebase ID Token verifier.'
+  spec.description   = "Verifies signatures in Firebase ID Tokens. It uses "\
+    "Redis to share x509 certificates between multiple instances, just "\
+    "request the keys once and you will have it until it's expiration time."
+  spec.homepage      = 'https://github.com/fschuindt/firebase_id_token'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -33,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.14'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'redcarpet', '~> 3.4.0'
 
   spec.add_dependency 'redis', '~> 3.3.3'
   spec.add_dependency 'redis-namespace', '~> 1.5.3'
