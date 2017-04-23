@@ -4,6 +4,7 @@ module FirebaseIdToken
   describe Certificates do
     let (:redis) { Redis::Namespace.new 'firebase_id_token', redis: Redis.new }
     let (:certs) { File.read('spec/fixtures/files/certificates.json') }
+    let (:kid) { JSON.parse(certs).first[0] }
     let (:expires_in) { (DateTime.now + (5/24r)).to_s }
     let (:response) { double }
 
@@ -92,6 +93,26 @@ module FirebaseIdToken
           described_class.request
           expect(described_class.all.first.values[0]).
             to be_a(OpenSSL::X509::Certificate)
+        end
+      end
+    end
+
+    describe '#find' do
+      context 'before requesting certificates' do
+        it 'returns nil' do
+          expect(described_class.find(kid)).to be(nil)
+        end
+      end
+
+      context 'after requesting certificates' do
+        it 'returns a OpenSSL::X509::Certificate when it finds the kid' do
+          described_class.request
+          expect(described_class.find(kid)).to be_a(OpenSSL::X509::Certificate)
+        end
+
+        it 'returns nil when it can not find the kid' do
+          described_class.request
+          expect(described_class.find('')).to be(nil)
         end
       end
     end
