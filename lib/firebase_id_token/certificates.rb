@@ -14,7 +14,7 @@ module FirebaseIdToken
   # this time went out, Redis will automatically delete those certificates.**
   #
   # When comes to accessing it, you can either use {.present?} to check if
-  # there's any data inside Redis certificates database or {.x509} to obtain a
+  # there's any data inside Redis certificates database or {.all} to obtain a
   # `Array` of current certificates.
   #
   # @example `.request` will only download once
@@ -28,7 +28,7 @@ module FirebaseIdToken
   #   FirebaseIdToken::Certificates.request_anyway # Downloads certificates.
   #
   # @see Certificates.present?
-  # @see Certificates.x509
+  # @see Certificates.all
   #
   class Certificates
     # Certificates in Redis (JSON `String` or `nil`).
