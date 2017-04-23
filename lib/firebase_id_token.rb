@@ -12,7 +12,7 @@ require 'firebase_id_token/certificates'
 # FirebaseIdToken::Certificates.request
 # FirebaseIdToken::Certificates.request_anyway
 # FirebaseIdToken::Certificates.present?
-# FirebaseIdToken::Certificates.x509
+# FirebaseIdToken::Certificates.all
 # FirebaseIdToken::Signature.verify(token)
 module FirebaseIdToken
   class << self

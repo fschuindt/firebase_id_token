@@ -76,9 +76,9 @@ module FirebaseIdToken
     # @return [Array]
     # @example
     #   FirebaseIdToken::Certificates.request
-    #   certs = FirebaseIdToken::Certificates.x509
+    #   certs = FirebaseIdToken::Certificates.all
     #   certs.first #=> {"1d6d01c7[...]" => #<OpenSSL::X509::Certificate[...]}
-    def self.x509
+    def self.all
       new.local_certs.map { |kid, cert|
         { kid => OpenSSL::X509::Certificate.new(cert) } }
     end

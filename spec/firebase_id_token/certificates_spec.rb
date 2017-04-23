@@ -75,22 +75,22 @@ module FirebaseIdToken
       end
     end
 
-    describe '#x509' do
+    describe '#all' do
       context 'before requesting certificates' do
         it 'returns a empty Array' do
-          expect(described_class.x509).to eq([])
+          expect(described_class.all).to eq([])
         end
       end
 
       context 'after requesting certificates' do
         it 'returns a array of hashes: String keys' do
           described_class.request
-          expect(described_class.x509.first.keys[0]).to be_a(String)
+          expect(described_class.all.first.keys[0]).to be_a(String)
         end
 
         it 'returns a array of hashes: OpenSSL::X509::Certificate values' do
           described_class.request
-          expect(described_class.x509.first.values[0]).
+          expect(described_class.all.first.values[0]).
             to be_a(OpenSSL::X509::Certificate)
         end
       end
