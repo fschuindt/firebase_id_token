@@ -83,6 +83,21 @@ module FirebaseIdToken
         { kid => OpenSSL::X509::Certificate.new(cert) } }
     end
 
+    # Returns a `OpenSSL::X509::Certificate` object of the requested Key ID
+    # (KID) if there's one. Returns `nil` otherwise.
+    # @param [String] kid Key ID
+    # @return [OpenSSL::X509::Certificate, nil]
+    # @example
+    #   FirebaseIdToken::Certificates.request
+    #   cert = FirebaseIdToken::Certificates.find "1d6d01f4w7d54c7[...]"
+    #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
+    def self.find(kid)
+      certs = new.local_certs
+      if not certs.empty? and certs[kid]
+        OpenSSL::X509::Certificate.new certs[kid]
+      end
+    end
+
     # Sets two instance attributes: `:redis` and `:local_certs`. Those are
     # respectively a Redis instance from {FirebaseIdToken::Configuration} and
     # the certificates in it.

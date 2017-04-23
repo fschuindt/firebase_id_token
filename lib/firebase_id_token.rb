@@ -13,6 +13,7 @@ require 'firebase_id_token/certificates'
 # FirebaseIdToken::Certificates.request_anyway
 # FirebaseIdToken::Certificates.present?
 # FirebaseIdToken::Certificates.all
+# FirebaseIdToken::Certificates.find(kid)
 # FirebaseIdToken::Signature.verify(token)
 module FirebaseIdToken
   class << self
