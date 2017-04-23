@@ -12,11 +12,11 @@ RSpec.describe FirebaseIdToken do
       end
     end
 
-    it 'sets global project_ids' do
-      project_ids = FirebaseIdToken::Signature.new('token').project_ids
-      expect(project_ids).to be_a(Array)
-      expect(project_ids.size).to eq(2)
-    end
+    # it 'sets global project_ids' do
+    #   project_ids = FirebaseIdToken::Signature.new('token').project_ids
+    #   expect(project_ids).to be_a(Array)
+    #   expect(project_ids.size).to eq(2)
+    # end
 
     after :each do
       FirebaseIdToken.reset
