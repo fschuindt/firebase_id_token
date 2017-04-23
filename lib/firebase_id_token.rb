@@ -3,7 +3,7 @@ require 'firebase_id_token/exceptions/certificates/request_code_error'
 require 'firebase_id_token/exceptions/certificates/time_to_live_error'
 require 'firebase_id_token/configuration'
 require 'firebase_id_token/certificates'
-require 'firebase_id_token/signature'
+# require 'firebase_id_token/signature'
 
 # Those two may raise a error.
 # FirebaseIdToken::Certificates.request
