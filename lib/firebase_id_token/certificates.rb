@@ -42,7 +42,7 @@ module FirebaseIdToken
     # use it in your application as it is more convenient.
     #
     # To see how it works, check the {#request} instance method documentation.
-    # @return [String, Exceptions::Certificates::RequestCodeError]
+    # @return [Hash, nil, Exceptions::Certificates::RequestCodeError]
     # @see Certificates#request
     def self.request
       new.request
@@ -53,7 +53,7 @@ module FirebaseIdToken
     #
     # To see how it works, check the {#request_anyway} instance method
     # documentation.
-    # @return [String, Exceptions::Certificates::RequestCodeError]
+    # @return [Hash, Exceptions::Certificates::RequestCodeError]
     # @see Certificates#request_anyway
     def self.request_anyway
       new.request_anyway
@@ -92,23 +92,25 @@ module FirebaseIdToken
       @local_certs = read_certificates
     end
 
-    # Calls {#request_anyway} only if there's no certificates on Redis.
+    # Calls {#request_anyway} only if there's no certificates on Redis. It will
+    # return `nil` otherwise.
     #
     # You should refer to the class method {.request} for using it in your
     # application.
-    # @return [String, Exceptions::Certificates::RequestCodeError]
+    # @return [Hash, nil, Exceptions::Certificates::RequestCodeError]
     # @see Certificates#request_anyway
     def request
       request_anyway if @local_certs.empty?
     end
 
-    # Triggers a HTTPS request to Google's x509 certificates API. If it reponds
-    # with a status `200 OK`, saves the request body into Redis and returns it.
-    # Otherwise it will raise a {Exceptions::Certificates::RequestCodeError}.
+    # Triggers a HTTPS request to Google's x509 certificates API. If it
+    # responds with a status `200 OK`, saves the request body into Redis and
+    # returns it as a `Hash`. Otherwise it will raise a
+    # {Exceptions::Certificates::RequestCodeError}.
     #
     # You should refer to the class method {.request_anyway} for using it in
     # your application.
-    # @return [String, Exceptions::Certificates::RequestCodeError]
+    # @return [Hash, Exceptions::Certificates::RequestCodeError]
     def request_anyway
       @request = HTTParty.get URL
       code = @request.code
