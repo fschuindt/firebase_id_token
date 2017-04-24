@@ -21,9 +21,8 @@ module FirebaseIdToken
         expect(described_class.verify(jwt['jwt_token'])).to be_a(Hash)
       end
 
-      it 'raises a exception when the signature is invalid' do
-        expect{ described_class.verify(jwt['bad_jwt_token']) }.
-          to raise_error(JWT::VerificationError)
+      it 'returns nil when the signature is invalid' do
+        expect(described_class.verify(jwt['bad_jwt_token'])).to be(nil)
       end
     end
   end
