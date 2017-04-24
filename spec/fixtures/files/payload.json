@@ -1,0 +1,24 @@
+{  
+   "iss":"https://securetoken.google.com/firebase-id-token",
+   "name":"Ugly Bob",
+   "picture":"https://someurl.com/photo.jpg",
+   "aud":"firebase-id-token",
+   "auth_time":1492981192,
+   "user_id":"theUserID",
+   "sub":"theUserID",
+   "iat":1492981200,
+   "exp":33029000017,
+   "email":"uglybob@emailurl.com",
+   "email_verified":true,
+   "firebase":{  
+      "identities":{  
+         "google.com":[  
+            "1010101010101010101"
+         ],
+         "email":[  
+            "uglybob@emailurl.com"
+         ]
+      },
+      "sign_in_provider":"google.com"
+   }
+}

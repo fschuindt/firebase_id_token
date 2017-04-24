@@ -8,6 +8,7 @@ require 'firebase_id_token/exceptions/certificates/request_code_error'
 require 'firebase_id_token/exceptions/certificates/time_to_live_error'
 require 'firebase_id_token/configuration'
 require 'firebase_id_token/certificates'
+require 'firebase_id_token/signature'
 
 # FirebaseIdToken::Certificates.request
 # FirebaseIdToken::Certificates.request_anyway
