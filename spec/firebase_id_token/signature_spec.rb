@@ -17,7 +17,7 @@ module FirebaseIdToken
     end
 
     describe '#verify' do
-      it 'returns the JWT payload when the signature is valid' do
+      it 'returns a Hash when the signature is valid' do
         expect(described_class.verify(jwt['jwt_token'])).to be_a(Hash)
       end
 
