@@ -93,7 +93,7 @@ module FirebaseIdToken
     #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
     def self.find(kid)
       certs = new.local_certs
-      if not certs.empty? and certs[kid]
+      if !certs.empty? && certs[kid]
         OpenSSL::X509::Certificate.new certs[kid]
       end
     end
