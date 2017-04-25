@@ -4,6 +4,7 @@ require 'httparty'
 require 'jwt'
 
 require 'firebase_id_token/version'
+require 'firebase_id_token/exceptions/certificates/no_entities_error'
 require 'firebase_id_token/exceptions/certificates/request_code_error'
 require 'firebase_id_token/exceptions/certificates/time_to_live_error'
 require 'firebase_id_token/configuration'

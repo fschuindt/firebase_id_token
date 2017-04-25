@@ -85,15 +85,20 @@ module FirebaseIdToken
 
     # Returns a `OpenSSL::X509::Certificate` object of the requested Key ID
     # (KID) if there's one. Returns `nil` otherwise.
+    #
+    # It will raise a {Exceptions::Certificates::NoEntitiesError} if the Redis
+    # certificates database is empty.
     # @param [String] kid Key ID
-    # @return [OpenSSL::X509::Certificate, nil]
+    # @return [OpenSSL::X509::Certificate, nil, Exceptions::Certificates::NoEntitiesError]
     # @example
     #   FirebaseIdToken::Certificates.request
     #   cert = FirebaseIdToken::Certificates.find "1d6d01f4w7d54c7[...]"
     #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
     def self.find(kid)
       certs = new.local_certs
-      if !certs.empty? && certs[kid]
+      raise Exceptions::Certificates::NoEntitiesError if certs.empty?
+
+      if certs[kid]
         OpenSSL::X509::Certificate.new certs[kid]
       end
     end

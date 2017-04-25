@@ -98,13 +98,14 @@ module FirebaseIdToken
     end
 
     describe '#find' do
-      context 'before requesting certificates' do
-        it 'returns nil' do
-          expect(described_class.find(kid)).to be(nil)
+      context 'without certificates in Redis database' do
+        it 'raises a exception' do
+          expect{ described_class.find(kid)}.
+            to raise_error(Exceptions::Certificates::NoEntitiesError)
         end
       end
 
-      context 'after requesting certificates' do
+      context 'with certificates in Redis database' do
         it 'returns a OpenSSL::X509::Certificate when it finds the kid' do
           described_class.request
           expect(described_class.find(kid)).to be_a(OpenSSL::X509::Certificate)
