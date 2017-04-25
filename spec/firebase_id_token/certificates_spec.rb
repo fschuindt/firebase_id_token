@@ -65,7 +65,7 @@ module FirebaseIdToken
       end
     end
 
-    describe '#present?' do
+    describe '.present?' do
       it 'returns false when Redis database is empty' do
         expect(described_class.present?).to be(false)
       end
@@ -76,7 +76,7 @@ module FirebaseIdToken
       end
     end
 
-    describe '#all' do
+    describe '.all' do
       context 'before requesting certificates' do
         it 'returns a empty Array' do
           expect(described_class.all).to eq([])
@@ -97,7 +97,7 @@ module FirebaseIdToken
       end
     end
 
-    describe '#find' do
+    describe '.find' do
       context 'without certificates in Redis database' do
         it 'raises a exception' do
           expect{ described_class.find(kid)}.
@@ -115,6 +115,17 @@ module FirebaseIdToken
           described_class.request
           expect(described_class.find('')).to be(nil)
         end
+      end
+    end
+
+    describe '.ttl' do
+      it 'returns a positive number when has certificates in Redis' do
+        described_class.request
+        expect(described_class.ttl).to be > 0
+      end
+
+      it 'returns zero when has no certificates in Redis' do
+        expect(described_class.ttl).to eq(0)
       end
     end
   end

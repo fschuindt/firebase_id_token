@@ -31,8 +31,8 @@ module FirebaseIdToken
   # @see Certificates.all
   #
   class Certificates
-    # Certificates in Redis (JSON `String` or `nil`).
-    attr_reader :local_certs
+    # Certificates in Redis (JSON `String` or `nil`) and a Redis instance.
+    attr_reader :local_certs, :redis
 
     # Google's x509 certificates API URL.
     URL = 'https://www.googleapis.com/robot/v1/metadata/x509/'\
@@ -101,6 +101,15 @@ module FirebaseIdToken
       if certs[kid]
         OpenSSL::X509::Certificate.new certs[kid]
       end
+    end
+
+    # Returns the current certificates TTL (Time-To-Live) in seconds. *Zero
+    # meaning no certificates.* It's the same as the certificates expiration
+    # time, use it to know when to request again.
+    # @return [Fixnum]
+    def self.ttl
+      ttl = new.redis.ttl('certificates')
+      ttl < 0 ? 0 : ttl
     end
 
     # Sets two instance attributes: `:redis` and `:local_certs`. Those are
