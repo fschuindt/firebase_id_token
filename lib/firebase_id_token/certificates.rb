@@ -38,23 +38,23 @@ module FirebaseIdToken
     URL = 'https://www.googleapis.com/robot/v1/metadata/x509/'\
       'securetoken@system.gserviceaccount.com'
 
-    # It is really a alias for the instance method {#request}, but you should
-    # use it in your application as it is more convenient.
+    # Calls {.request_anyway} only if there's no certificates on Redis. It will
+    # return `nil` otherwise.
     #
-    # To see how it works, check the {#request} instance method documentation.
+    # It will raise {Exceptions::CertificatesRequestError} if the request
+    # fails, check {.request_anyway}.
     # @return [nil, Hash]
-    # @see Certificates#request
+    # @see Certificates.request_anyway
     def self.request
       new.request
     end
 
-    # It is really a alias for the instance method {#request_anyway}, but you
-    # should use it in your application as it is more convenient.
+    # Triggers a HTTPS request to Google's x509 certificates API. If it
+    # responds with a status `200 OK`, saves the request body into Redis and
+    # returns it as a `Hash`.
     #
-    # To see how it works, check the {#request_anyway} instance method
-    # documentation.
+    # Otherwise it will raise a {Exceptions::CertificatesRequestError}.
     # @return [Hash]
-    # @see Certificates#request_anyway
     def self.request_anyway
       new.request_anyway
     end
@@ -121,28 +121,12 @@ module FirebaseIdToken
       @local_certs = read_certificates
     end
 
-    # Calls {#request_anyway} only if there's no certificates on Redis. It will
-    # return `nil` otherwise.
-    #
-    # You should refer to the class method {.request} for using it in your
-    # application.
-    #
-    # It will raise {Exceptions::CertificatesRequestError} if the request
-    # fails, check {#request_anyway}.
-    # @return [nil, Hash]
-    # @see Certificates#request_anyway
+    # @see Certificates.request
     def request
       request_anyway if @local_certs.empty?
     end
 
-    # Triggers a HTTPS request to Google's x509 certificates API. If it
-    # responds with a status `200 OK`, saves the request body into Redis and
-    # returns it as a `Hash`. Otherwise it will raise a
-    # {Exceptions::CertificatesRequestError}.
-    #
-    # You should refer to the class method {.request_anyway} for using it in
-    # your application.
-    # @return [Hash]
+    # @see Certificates.request_anyway
     def request_anyway
       @request = HTTParty.get URL
       code = @request.code
