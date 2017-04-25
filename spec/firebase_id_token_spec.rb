@@ -1,22 +1,29 @@
 require 'spec_helper'
 
 RSpec.describe FirebaseIdToken do
+  let(:jwt) { JSON.parse File.read('spec/fixtures/files/jwt.json') }
+
+  let (:mock_certificates) {
+    allow(FirebaseIdToken::Certificates).to receive(:find).
+      with(an_instance_of(String)) {
+        OpenSSL::X509::Certificate.new(jwt['certificate']) }
+  }
+
   it 'has a version number' do
     expect(FirebaseIdToken::VERSION).not_to be nil
   end
 
   describe '#configure' do
     before :each do
+      mock_certificates
       FirebaseIdToken.configure do |config|
-        config.project_ids = ['my-project-id', 'another-project-id']
+        config.project_ids = ['firebase-id-token']
       end
     end
 
-    # it 'sets global project_ids' do
-    #   project_ids = FirebaseIdToken::Signature.new('token').project_ids
-    #   expect(project_ids).to be_a(Array)
-    #   expect(project_ids.size).to eq(2)
-    # end
+    it 'sets global project_ids' do
+      expect(FirebaseIdToken::Signature.verify(jwt['jwt_token'])).to be_a(Hash)
+    end
 
     after :each do
       FirebaseIdToken.reset
