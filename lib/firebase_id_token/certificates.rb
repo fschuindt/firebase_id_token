@@ -42,7 +42,7 @@ module FirebaseIdToken
     # use it in your application as it is more convenient.
     #
     # To see how it works, check the {#request} instance method documentation.
-    # @return [Hash, nil, Exceptions::RequestCodeError]
+    # @return [Hash,nil,Exceptions::CertificatesRequestError]
     # @see Certificates#request
     def self.request
       new.request
@@ -53,7 +53,7 @@ module FirebaseIdToken
     #
     # To see how it works, check the {#request_anyway} instance method
     # documentation.
-    # @return [Hash, Exceptions::RequestCodeError]
+    # @return [Hash,Exceptions::CertificatesRequestError]
     # @see Certificates#request_anyway
     def self.request_anyway
       new.request_anyway
@@ -86,17 +86,17 @@ module FirebaseIdToken
     # Returns a `OpenSSL::X509::Certificate` object of the requested Key ID
     # (KID) if there's one. Returns `nil` otherwise.
     #
-    # It will raise a {Exceptions::NoEntitiesError} if the Redis
+    # It will raise a {Exceptions::NoCertificatesError} if the Redis
     # certificates database is empty.
     # @param [String] kid Key ID
-    # @return [OpenSSL::X509::Certificate, nil, Exceptions::NoEntitiesError]
+    # @return [OpenSSL::X509::Certificate,nil,Exceptions::NoCertificatesError]
     # @example
     #   FirebaseIdToken::Certificates.request
     #   cert = FirebaseIdToken::Certificates.find "1d6d01f4w7d54c7[...]"
     #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
     def self.find(kid)
       certs = new.local_certs
-      raise Exceptions::NoEntitiesError if certs.empty?
+      raise Exceptions::NoCertificatesError if certs.empty?
 
       if certs[kid]
         OpenSSL::X509::Certificate.new certs[kid]
@@ -117,7 +117,7 @@ module FirebaseIdToken
     #
     # You should refer to the class method {.request} for using it in your
     # application.
-    # @return [Hash, nil, Exceptions::RequestCodeError]
+    # @return [Hash,nil,Exceptions::CertificatesRequestError]
     # @see Certificates#request_anyway
     def request
       request_anyway if @local_certs.empty?
@@ -126,18 +126,18 @@ module FirebaseIdToken
     # Triggers a HTTPS request to Google's x509 certificates API. If it
     # responds with a status `200 OK`, saves the request body into Redis and
     # returns it as a `Hash`. Otherwise it will raise a
-    # {Exceptions::RequestCodeError}.
+    # {Exceptions::CertificatesRequestError}.
     #
     # You should refer to the class method {.request_anyway} for using it in
     # your application.
-    # @return [Hash, Exceptions::RequestCodeError]
+    # @return [Hash,Exceptions::CertificatesRequestError]
     def request_anyway
       @request = HTTParty.get URL
       code = @request.code
       if code == 200
         save_certificates
       else
-        raise Exceptions::RequestCodeError.new(code)
+        raise Exceptions::CertificatesRequestError.new(code)
       end
     end
 
@@ -160,7 +160,7 @@ module FirebaseIdToken
       if ttl > 3600
         ttl
       else
-        raise Exceptions::TimeToLiveError
+        raise Exceptions::CertificatesTtlError
       end
     end
   end

@@ -1,6 +1,6 @@
 module FirebaseIdToken
   module Exceptions
-    class NoEntitiesError < RuntimeError
+    class NoCertificatesError < RuntimeError
       def initialize(message = "There's no certificates in Redis database.")
         super message
       end

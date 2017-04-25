@@ -55,13 +55,13 @@ module FirebaseIdToken
         ttl_30min = (DateTime.now + (1/24r)/2).to_s
         allow(response).to receive(:headers) { { 'expires' => ttl_30min } }
         expect{ described_class.request_anyway }.
-          to raise_error(Exceptions::TimeToLiveError)
+          to raise_error(Exceptions::CertificatesTtlError)
       end
 
       it 'raises a error when HTTP response code is other than 200' do
         allow(response).to receive(:code) { 401 }
         expect{ described_class.request_anyway }.
-          to raise_error(Exceptions::RequestCodeError)
+          to raise_error(Exceptions::CertificatesRequestError)
       end
     end
 
@@ -101,7 +101,7 @@ module FirebaseIdToken
       context 'without certificates in Redis database' do
         it 'raises a exception' do
           expect{ described_class.find(kid)}.
-            to raise_error(Exceptions::NoEntitiesError)
+            to raise_error(Exceptions::NoCertificatesError)
         end
       end
 
