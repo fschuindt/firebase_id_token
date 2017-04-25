@@ -13,6 +13,8 @@ module FirebaseIdToken
   # set a Redis expiration time to match Google's API header `expires`. **After
   # this time went out, Redis will automatically delete those certificates.**
   #
+  # *To know how many seconds left until the expiration you can use {.ttl}.*
+  #
   # When comes to accessing it, you can either use {.present?} to check if
   # there's any data inside Redis certificates database or {.all} to obtain a
   # `Array` of current certificates.
@@ -26,9 +28,6 @@ module FirebaseIdToken
   #   FirebaseIdToken::Certificates.request # Downloads certificates.
   #   FirebaseIdToken::Certificates.request_anyway # Downloads certificates.
   #   FirebaseIdToken::Certificates.request_anyway # Downloads certificates.
-  #
-  # @see Certificates.present?
-  # @see Certificates.all
   #
   class Certificates
     # Certificates in Redis (JSON `String` or `nil`) and a Redis instance.
