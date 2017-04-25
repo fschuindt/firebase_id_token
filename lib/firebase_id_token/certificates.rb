@@ -30,8 +30,10 @@ module FirebaseIdToken
   #   FirebaseIdToken::Certificates.request_anyway # Downloads certificates.
   #
   class Certificates
-    # Certificates in Redis (JSON `String` or `nil`) and a Redis instance.
-    attr_reader :local_certs, :redis
+    # A Redis instance.
+    attr_reader :redis
+    # Certificates saved in the Redis (JSON `String` or `nil`).
+    attr_reader :local_certs
 
     # Google's x509 certificates API URL.
     URL = 'https://www.googleapis.com/robot/v1/metadata/x509/'\
