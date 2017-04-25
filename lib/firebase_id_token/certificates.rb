@@ -42,7 +42,7 @@ module FirebaseIdToken
     # use it in your application as it is more convenient.
     #
     # To see how it works, check the {#request} instance method documentation.
-    # @return [Hash,nil,Exceptions::CertificatesRequestError]
+    # @return [nil,Hash,Exceptions::CertificatesRequestError]
     # @see Certificates#request
     def self.request
       new.request
@@ -89,7 +89,7 @@ module FirebaseIdToken
     # It will raise a {Exceptions::NoCertificatesError} if the Redis
     # certificates database is empty.
     # @param [String] kid Key ID
-    # @return [OpenSSL::X509::Certificate,nil,Exceptions::NoCertificatesError]
+    # @return [nil,OpenSSL::X509::Certificate,Exceptions::NoCertificatesError]
     # @example
     #   FirebaseIdToken::Certificates.request
     #   cert = FirebaseIdToken::Certificates.find "1d6d01f4w7d54c7[...]"
@@ -117,7 +117,7 @@ module FirebaseIdToken
     #
     # You should refer to the class method {.request} for using it in your
     # application.
-    # @return [Hash,nil,Exceptions::CertificatesRequestError]
+    # @return [nil,Hash,Exceptions::CertificatesRequestError]
     # @see Certificates#request_anyway
     def request
       request_anyway if @local_certs.empty?
