@@ -43,7 +43,9 @@ module FirebaseIdToken
     # return `nil` otherwise.
     #
     # It will raise {Exceptions::CertificatesRequestError} if the request
-    # fails, check {.request_anyway}.
+    # fails or {Exceptions::CertificatesTtlError} when Google responds with a
+    # low TTL, check out {.request_anyway} for more info.
+    #
     # @return [nil, Hash]
     # @see Certificates.request_anyway
     def self.request
@@ -55,6 +57,10 @@ module FirebaseIdToken
     # returns it as a `Hash`.
     #
     # Otherwise it will raise a {Exceptions::CertificatesRequestError}.
+    #
+    # This is really rare to happen, but Google may respond with a low TTL
+    # certificate. This is a `SecurityError` and will raise a
+    # {Exceptions::CertificatesTtlError}. You are mostly like to never face it.
     # @return [Hash]
     def self.request_anyway
       new.request_anyway
