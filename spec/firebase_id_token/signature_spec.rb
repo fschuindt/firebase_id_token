@@ -24,6 +24,10 @@ module FirebaseIdToken
       it 'returns nil when the signature is invalid' do
         expect(described_class.verify(jwt['bad_jwt_token'])).to be(nil)
       end
+
+      it 'returns nil with a invalid key format' do
+        expect(described_class.verify('aaa')).to be(nil)
+      end
     end
   end
 end

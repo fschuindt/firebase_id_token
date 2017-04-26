@@ -52,7 +52,7 @@ module FirebaseIdToken
     # @param [String] jwt_token Firebase ID Token
     def initialize(jwt_token)
       @project_ids = FirebaseIdToken.configuration.project_ids
-      @kid = JWT.decode(jwt_token, nil, false).last['kid']
+      @kid = extract_kid(jwt_token)
       @jwt_token = jwt_token
     end
 
@@ -62,13 +62,19 @@ module FirebaseIdToken
         payload = decode_jwt_payload(@jwt_token, cert.public_key)
         authorize payload
       end
-    rescue JWT::VerificationError
     end
 
     private
 
+    def extract_kid(jwt_token)
+      JWT.decode(jwt_token, nil, false).last['kid']
+    rescue StandardError
+      'none'
+    end
+
     def decode_jwt_payload(token, cert_key)
       JWT.decode(token, cert_key, true, JWT_DEFAULTS).first
+    rescue StandardError
     end
 
     def authorize(payload)
