@@ -105,7 +105,7 @@ FirebaseIdToken::Certificates.find('ec8f292sd30224afac5c55540df66d1f999d')
 
 ```
 
-### Downloading in Rails
+#### Downloading in Rails
 
 If you are using Rails it's preferred that you download the certificates in a background job, you can use [ActiveJob](http://guides.rubyonrails.org/active_job_basics.html) in this case.
 ```ruby
@@ -127,9 +127,8 @@ You can use [whenever](https://github.com/javan/whenever) to do this.
 Pass the Firebase ID Token to `FirebaseIdToken::Signature.verify` and it will return the token payload if everything is ok:
 
 ```ruby
-# The returning values are just for illustration.
 FirebaseIdToken::Signature.verify(token)
-=> {"iss"=>"https://securetoken.google.com/firebase-id-token", "name"=>"Bob Test", "picture"=>"https://lh3.googleusercontent.com/some_picture.jpg", "aud"=>"firebase-id-token", "auth_time"=>1493176176, "user_id"=>"lOcoO3p3iH4lZ2k5oqw3t5e6poUm2", "sub"=>"lOcoO3p3iH4lZ2k5oqw3t5e6poUm2", "iat"=>1493176179, "exp"=>1493179779, "email"=>"bob@email.com", "email_verified"=>true, "firebase"=>{"identities"=>{"google.com"=>["109058030492384365"], "email"=>["bob@email.com"]}, "sign_in_provider"=>"google.com"}}
+=> {"iss"=>"https://securetoken.google.com/firebase-id-token", "name"=>"Bob Test", [...]
 ```
 
 When either the signature is false or the token is invalid, it will return `nil`:
@@ -142,6 +141,37 @@ FirebaseIdToken::Signature.verify('aaaaaa')
 ```
 
 **WARNING:** If you try to verify a signature without any certificates in Redis database it will raise a `FirebaseIdToken::Exceptions::NoCertificatesError`.
+
+#### Payload Structure
+
+In case you need, here's a example of the payload structure in JSON.
+```json
+{  
+   "iss":"https://securetoken.google.com/firebase-id-token",
+   "name":"Ugly Bob",
+   "picture":"https://someurl.com/photo.jpg",
+   "aud":"firebase-id-token",
+   "auth_time":1492981192,
+   "user_id":"theUserID",
+   "sub":"theUserID",
+   "iat":1492981200,
+   "exp":33029000017,
+   "email":"uglybob@emailurl.com",
+   "email_verified":true,
+   "firebase":{  
+      "identities":{  
+         "google.com":[  
+            "1010101010101010101"
+         ],
+         "email":[  
+            "uglybob@emailurl.com"
+         ]
+      },
+      "sign_in_provider":"google.com"
+   }
+}
+
+```
 
 ## License
 
