@@ -13,7 +13,7 @@ It also checks the JWT payload parameters as recommended [here](https://firebase
 
 **This gem was developed recently and needs real world feedback.**
 
-If you are going to use it in production environment, please note that I am still testing it. It has realistc RSpec examples that uses real X509 certificates and signed JWT to perform tests and I can say it's working great. But as it's working implies in security risks you should be aware.
+If you are going to use it in production environment, please note that I am still testing it. It has realistc RSpec examples that uses real X509 certificates and signed JWT to perform tests and I can say it's working great. But using it implies in security risks, you should be aware.
 
 Feel free to open any issue or to [contact me](https://fschuindt.github.io/blog/about/) regarding it's performance.
 
