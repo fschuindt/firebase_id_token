@@ -88,7 +88,7 @@ Google give us information about the certificates expiration time, it's used to 
 You can access informations about it:
 ```ruby
 # Boolean representing the presence of certificates in Redis database.
-FirebaseIdToken::Certificates.preset?
+FirebaseIdToken::Certificates.present?
 => true
 
 # How many seconds until the certificates expiration.
@@ -118,7 +118,7 @@ class RequestCertificatesJob < ApplicationJob
 end
 ```
 
-Then set it as a cron job, I recommend running it once every hour or every 30 minutes, you choose it. Normally the certificates expiration time is around 5 to 6 hours, but it's good to perform it in a small fraction of this time.
+Then set it as a cron job, I recommend running it once every hour or every 30 minutes, it's up to you. Normally the certificates expiration time is around 5 to 6 hours, but it's good to perform it in a small fraction of this time.
 
 You can use [whenever](https://github.com/javan/whenever) to do this.
 
