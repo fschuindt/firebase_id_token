@@ -10,20 +10,12 @@ Gem::Specification.new do |spec|
   spec.email         = ['f.schuindtcs@gmail.com']
 
   spec.summary       = 'A Firebase ID Token verifier.'
-  spec.description   = "Verifies signatures in Firebase ID Tokens. It uses "\
-    "Redis to share x509 certificates between multiple instances, just "\
-    "request the keys once and you will have it until it's expiration time."
+  spec.description   = "A Ruby gem to verify the signature of Firebase ID "\
+    "Tokens. It uses Redis to store Google's x509 certificates and manage "\
+    "their expiration time, so you don't need to request Google's API in "\
+    "every execution and can access it as fast as reading from memory."
   spec.homepage      = 'https://github.com/fschuindt/firebase_id_token'
   spec.license       = 'MIT'
-
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  # if spec.respond_to?(:metadata)
-  #   spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
-  # else
-  #   raise 'RubyGems 2.0 or newer is required to protect against ' \
-  #     'public gem pushes.'
-  # end
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
