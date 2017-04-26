@@ -58,8 +58,9 @@ module FirebaseIdToken
 
     # @see Signature.verify
     def verify
-      if cert = FirebaseIdToken::Certificates.find(@kid)
-        payload = decode_jwt_payload(@jwt_token, cert.public_key)
+      certificate = FirebaseIdToken::Certificates.find(@kid)
+      if certificate
+        payload = decode_jwt_payload(@jwt_token, certificate.public_key)
         authorize payload
       end
     end
@@ -75,6 +76,7 @@ module FirebaseIdToken
     def decode_jwt_payload(token, cert_key)
       JWT.decode(token, cert_key, true, JWT_DEFAULTS).first
     rescue StandardError
+      nil
     end
 
     def authorize(payload)
