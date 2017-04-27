@@ -34,7 +34,7 @@ gem install firebase_id_token
 
 or in your Gemfile
 ```
-gem 'firebase_id_token'
+gem 'firebase_id_token', '~> 1.2.1'
 ```
 then
 ```
@@ -62,7 +62,7 @@ In this case you must have the gem `redis` in your `Gemfile`.
 ```ruby
 FirebaseIdToken.configure do |config|
   config.project_ids = ['your-firebase-project-id']
-  congig.redis = Redis.new(:host => "10.0.1.1", :port => 6380, :db => 15)
+  congig.redis = Redis.new(host: '10.0.1.1', port: 6380, db: 15)
 end
 ```
 
@@ -86,24 +86,30 @@ FirebaseIdToken::Certificates.request_anyway
 
 Google give us information about the certificates expiration time, it's used to set a Redis TTL (Time-To-Live) when saving it. By doing so, the certificates will be automatically deleted after it's expiration.
 
-You can access informations about it:
+#### Certificates Info
+
+Checks the presence of certificates in Redis database.
 ```ruby
-# Boolean representing the presence of certificates in Redis database.
 FirebaseIdToken::Certificates.present?
 => true
+```
 
-# How many seconds until the certificates expiration.
+How many seconds until the certificates expiration.
+```ruby
 FirebaseIdToken::Certificates.ttl
 => 22352
+```
 
-# List of all certificates in database.
+Lists all certificates in database.
+```ruby
 FirebaseIdToken::Certificates.all
-=> [{"ec8f292sd30224afac5c55540df66d1f999d" => <OpenSSL::X509::Certificate: [...]
+=> [{"ec8f292sd30224afac5c55540df66d1f999d" => <OpenSSL::X509::Certificate: [...]]
+```
 
-# Returns the respective certificate of a given Key ID.
+Finds the respective certificate of a given Key ID.
+```ruby
 FirebaseIdToken::Certificates.find('ec8f292sd30224afac5c55540df66d1f999d')
-=> <OpenSSL::X509::Certificate: subject=<OpenSSL::X509 [...]
-
+=> <OpenSSL::X509::Certificate: subject=<OpenSSL::X509 [...]>
 ```
 
 #### Downloading in Rails
@@ -129,7 +135,7 @@ Pass the Firebase ID Token to `FirebaseIdToken::Signature.verify` and it will re
 
 ```ruby
 FirebaseIdToken::Signature.verify(token)
-=> {"iss"=>"https://securetoken.google.com/firebase-id-token", "name"=>"Bob Test", [...]
+=> {"iss"=>"https://securetoken.google.com/firebase-id-token", "name"=>"Bob Test", [...]}
 ```
 
 When either the signature is false or the token is invalid, it will return `nil`:
@@ -145,7 +151,7 @@ FirebaseIdToken::Signature.verify('aaaaaa')
 
 #### Payload Structure
 
-In case you need, here's a example of the payload structure in JSON.
+In case you need, here's a example of the payload structure from a Google login in JSON.
 ```json
 {  
    "iss":"https://securetoken.google.com/firebase-id-token",
