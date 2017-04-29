@@ -113,7 +113,7 @@ FirebaseIdToken::Certificates.find('ec8f292sd30224afac5c55540df66d1f999d')
 
 #### Downloading in Rails
 
-If you are using Rails it's preferred that you download certificates in a background job, you can use [ActiveJob](http://guides.rubyonrails.org/active_job_basics.html) in this case.
+If you are using Rails it's expected you to download certificates in a background job, you can use [ActiveJob](http://guides.rubyonrails.org/active_job_basics.html) in this case.
 
 ```ruby
 class RequestCertificatesJob < ApplicationJob
@@ -129,7 +129,7 @@ Then set it as a cron job, I recommend running it once every hour or every 30 mi
 
 You can use [whenever](https://github.com/javan/whenever) to do this.
 
-It's good to perform this job every time the application starts too.  
+It's clever to execute this job every time the application starts too.  
 You might have a `config/initializers/firebase_id_token.rb`:
 
 ```ruby
