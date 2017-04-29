@@ -41,13 +41,18 @@ then
 bundle install
 ```
 
-## Configuration
+## Start and Configuration
 
 It's needed to set up your Firebase Project ID.
 
-If you are using Rails, this should probably go into `config/initializers/firebase_id_token.rb`.
+If you are using Rails, this should probably go into `config/initializers/firebase_id_token.rb`.  
+And it's good that you request Google's x509 certificates during the application start as well.
 
 ```ruby
+# Request during application start if you are using Rails.
+FirebaseIdToken::Certificates.request
+
+# Set your Firebase Project ID.
 FirebaseIdToken.configure do |config|
   config.project_ids = ['your-firebase-project-id']
 end
@@ -114,7 +119,7 @@ FirebaseIdToken::Certificates.find('ec8f292sd30224afac5c55540df66d1f999d')
 
 #### Downloading in Rails
 
-If you are using Rails it's preferred that you download the certificates in a background job, you can use [ActiveJob](http://guides.rubyonrails.org/active_job_basics.html) in this case.
+If you are using Rails it's preferred that you download the certificates both in initializers and in a cron background job, you can use [ActiveJob](http://guides.rubyonrails.org/active_job_basics.html) to handle background processes.
 ```ruby
 class RequestCertificatesJob < ApplicationJob
   queue_as :default
