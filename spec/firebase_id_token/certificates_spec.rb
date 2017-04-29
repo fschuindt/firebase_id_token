@@ -4,13 +4,15 @@ module FirebaseIdToken
   describe Certificates do
     let (:redis) { Redis::Namespace.new 'firebase_id_token', redis: Redis.new }
     let (:certs) { File.read('spec/fixtures/files/certificates.json') }
+    let (:cache) { 'public, max-age=19302, must-revalidate, no-transform' }
+    let (:low_cache) { 'public, max-age=2160, must-revalidate, no-transform' }
     let (:kid) { JSON.parse(certs).first[0] }
     let (:expires_in) { (DateTime.now + (5/24r)).to_s }
     let (:response) { double }
 
     let (:mock_response) {
       allow(response).to receive(:code) { 200 }
-      allow(response).to receive(:headers) { { 'expires' => expires_in } }
+      allow(response).to receive(:headers) { { 'cache-control' => cache } }
       allow(response).to receive(:body) { certs }
     }
 
@@ -52,8 +54,7 @@ module FirebaseIdToken
       end
 
       it 'raises a error when certificates expires in less than 1 hour' do
-        ttl_30min = (DateTime.now + (1/24r)/2).to_s
-        allow(response).to receive(:headers) { { 'expires' => ttl_30min } }
+        allow(response).to receive(:headers) {{'cache-control' => low_cache}}
         expect{ described_class.request_anyway }.
           to raise_error(Exceptions::CertificatesTtlError)
       end

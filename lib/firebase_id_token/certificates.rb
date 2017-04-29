@@ -157,8 +157,8 @@ module FirebaseIdToken
     end
 
     def ttl
-      ttl = DateTime.parse(@request.headers['expires']).
-        to_time.to_i - Time.now.to_i
+      cache_control = @request.headers['cache-control']
+      ttl = cache_control.match(/max-age=([0-9]+)/).captures.first.to_i
 
       if ttl > 3600
         ttl
