@@ -41,7 +41,7 @@ then
 bundle install
 ```
 
-## Start and Configuration
+## Configuration
 
 It's needed to set up your Firebase Project ID.
 
