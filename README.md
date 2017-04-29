@@ -34,7 +34,7 @@ gem install firebase_id_token
 
 or in your Gemfile
 ```
-gem 'firebase_id_token', '~> 1.2.1'
+gem 'firebase_id_token', '~> 1.2.2'
 ```
 then
 ```
@@ -113,32 +113,49 @@ FirebaseIdToken::Certificates.find('ec8f292sd30224afac5c55540df66d1f999d')
 
 #### Downloading in Rails
 
-If you are using Rails it's expected you to download certificates in a background job, you can use [ActiveJob](http://guides.rubyonrails.org/active_job_basics.html).
+If you are using Rails, it's clever to download certificates in a cron task, you can use [whenever](https://github.com/javan/whenever).
 
+**Example**
+
+*Read whenever's guide on how to set it up.*
+
+Create your task in `lib/tasks/firebase.rake`:
 ```ruby
-class RequestCertificatesJob < ApplicationJob
-  queue_as :default
+namespace :firebase do
+  namespace :certificates do
+    desc "Request Google's x509 certificates when Redis is empty"
+    task request: :environment do
+      FirebaseIdToken::Certificates.request
+    end
 
-  def perform
-    FirebaseIdToken::Certificates.request_anyway
+    desc "Request Google's x509 certificates and override Redis"
+    task request_anyway: :environment do
+      FirebaseIdToken::Certificates.request_anyway
+    end
   end
 end
 ```
 
-Then set it as a cron job, I recommend running it once every hour or every 30 minutes, it's up to you. Normally the certificates expiration time is around 5 to 6 hours, but it's good to perform it in a small fraction of this time.
-
-You can use [whenever](https://github.com/javan/whenever) to do this.
-
-It's clever to execute this job every time the application starts too.  
-You might have a `config/initializers/firebase_id_token.rb`:
-
+And in your `config/schedule.rb` you might have:
 ```ruby
-RequestCertificatesJob.perform_later
-
-FirebaseIdToken.configure do |config|
-  config.project_ids = ['your-firebase-project-id']
+every 1.hour do
+  rake 'firebase:certificates:request_anyway'
 end
 ```
+
+Then:
+```
+$ whenever --update-crontab
+```
+
+I recommend running it once every hour or every 30 minutes, it's up to you. Normally the certificates expiration time is around 4 to 6 hours, but it's good to perform it in a small fraction of this time.
+
+When developing and testing you should just run the task:
+```
+$ rake firebase:certificates:request
+```
+
+*And remember, you need the Redis server to be running.*
 
 ### Verifying Tokens
 
