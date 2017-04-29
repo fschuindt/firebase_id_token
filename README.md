@@ -45,14 +45,8 @@ bundle install
 
 It's needed to set up your Firebase Project ID.
 
-If you are using Rails, this should probably go into `config/initializers/firebase_id_token.rb`.  
-And it's good that you request Google's x509 certificates during the application start as well.
-
+If you are using Rails, this should probably go into `config/initializers/firebase_id_token.rb`.
 ```ruby
-# Request during application start if you are using Rails.
-FirebaseIdToken::Certificates.request
-
-# Set your Firebase Project ID.
 FirebaseIdToken.configure do |config|
   config.project_ids = ['your-firebase-project-id']
 end
@@ -119,7 +113,8 @@ FirebaseIdToken::Certificates.find('ec8f292sd30224afac5c55540df66d1f999d')
 
 #### Downloading in Rails
 
-If you are using Rails it's preferred that you download the certificates both in initializers and in a cron background job, you can use [ActiveJob](http://guides.rubyonrails.org/active_job_basics.html) to handle background processes.
+If you are using Rails it's preferred that you download certificates in a background job, you can use [ActiveJob](http://guides.rubyonrails.org/active_job_basics.html) in this case.
+
 ```ruby
 class RequestCertificatesJob < ApplicationJob
   queue_as :default
@@ -133,6 +128,17 @@ end
 Then set it as a cron job, I recommend running it once every hour or every 30 minutes, it's up to you. Normally the certificates expiration time is around 5 to 6 hours, but it's good to perform it in a small fraction of this time.
 
 You can use [whenever](https://github.com/javan/whenever) to do this.
+
+It's good to perform this job every time the application starts too.  
+You might have a `config/initializers/firebase_id_token.rb`:
+
+```ruby
+RequestCertificatesJob.perform_later
+
+FirebaseIdToken.configure do |config|
+  config.project_ids = ['your-firebase-project-id']
+end
+```
 
 ### Verifying Tokens
 
