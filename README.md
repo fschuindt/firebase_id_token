@@ -14,9 +14,9 @@ It also checks the JWT payload parameters as recommended [here](https://firebase
 
 **This gem was developed recently and needs real world feedback.**
 
-If you are going to use it in production environment, please note that I am still testing it. It has realistc RSpec examples that uses real X509 certificates and signed JWT to perform tests and I can say it's working great. But using it implies in security risks, you should be aware.
+If you are going to use it in a production environment, please note that I am still testing it. It has realistic RSpec examples that use real X509 certificates and signed JWT to perform tests and I can say it's working great. But using it implies in security risks, you should be aware.
 
-Feel free to open any issue or to [contact me](https://fschuindt.github.io/blog/about/) regarding it's performance.
+Feel free to open any issue or to [contact me](https://fschuindt.github.io/blog/about/) regarding its performance.
 
 ## Docs
 
@@ -57,7 +57,7 @@ end
 *If you want to verify signatures from more than one Firebase project, just add more Project IDs to the list.*
 
 You can also pass a Redis instance to `config` if you are not using Redis defaults.  
-In this case you must have the gem `redis` in your `Gemfile`.
+In this case, you must have the gem `redis` in your `Gemfile`.
 ```ruby
 FirebaseIdToken.configure do |config|
   config.project_ids = ['your-firebase-project-id']
@@ -65,7 +65,7 @@ FirebaseIdToken.configure do |config|
 end
 ```
 
-Otherwise it will use just `Redis.new` as the instance.
+Otherwise, it will use just `Redis.new` as the instance.
 
 ## Usage
 
@@ -83,7 +83,7 @@ It will download the certificates and save it in Redis, but only if Redis certif
 FirebaseIdToken::Certificates.request_anyway
 ```
 
-Google give us information about the certificates expiration time, it's used to set a Redis TTL (Time-To-Live) when saving it. By doing so, the certificates will be automatically deleted after it's expiration.
+Google give us information about the certificates expiration time, it's used to set a Redis TTL (Time-To-Live) when saving it. By doing so, the certificates will be automatically deleted after its expiration.
 
 #### Certificates Info
 
@@ -93,13 +93,13 @@ FirebaseIdToken::Certificates.present?
 => true
 ```
 
-How many seconds until the certificates expiration.
+How many seconds until the certificate's expiration.
 ```ruby
 FirebaseIdToken::Certificates.ttl
 => 22352
 ```
 
-Lists all certificates in database.
+Lists all certificates in a database.
 ```ruby
 FirebaseIdToken::Certificates.all
 => [{"ec8f292sd30224afac5c55540df66d1f999d" => <OpenSSL::X509::Certificate: [...]]
