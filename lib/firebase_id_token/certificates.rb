@@ -16,7 +16,7 @@ module FirebaseIdToken
   # *To know how many seconds left until the expiration you can use {.ttl}.*
   #
   # When comes to accessing it, you can either use {.present?} to check if
-  # there's any data inside Redis certificates database or {.all} to obtain a
+  # there's any data inside Redis certificates database or {.all} to obtain an
   # `Array` of current certificates.
   #
   # @example `.request` will only download once
@@ -39,7 +39,7 @@ module FirebaseIdToken
     URL = 'https://www.googleapis.com/robot/v1/metadata/x509/'\
       'securetoken@system.gserviceaccount.com'
 
-    # Calls {.request_anyway} only if there's no certificates on Redis. It will
+    # Calls {.request_anyway} only if there are no certificates on Redis. It will
     # return `nil` otherwise.
     #
     # It will raise {Exceptions::CertificatesRequestError} if the request
@@ -75,7 +75,7 @@ module FirebaseIdToken
       ! new.local_certs.empty?
     end
 
-    # Returns a array of hashes, each hash is a single `{key => value}` pair
+    # Returns an array of hashes, each hash is a single `{key => value}` pair
     # containing the certificate KID `String` as key and a
     # `OpenSSL::X509::Certificate` object of the respective certificate as
     # value. Returns a empty `Array` when there's no certificates data on
