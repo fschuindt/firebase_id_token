@@ -37,7 +37,7 @@ module FirebaseIdToken
     #
     # It will also return `nil` when it fails in checking if all the required
     # JWT fields are valid, as recommended [here](https://goo.gl/yOrZZX) by
-    # Firebase oficial documentation.
+    # Firebase official documentation.
     #
     # Note that it will raise a {Exceptions::NoCertificatesError} if the Redis
     # certificates database is empty. Ensure to call {Certificates.request}
