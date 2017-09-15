@@ -66,6 +66,15 @@ module FirebaseIdToken
       end
     end
 
+    describe '#request_anyway' do
+      it 'also requests certificates' do
+        expect(HTTParty).to receive(:get).
+          with(FirebaseIdToken::Certificates::URL)
+
+        described_class.request_anyway
+      end
+    end
+
     describe '.present?' do
       it 'returns false when Redis database is empty' do
         expect(described_class.present?).to be(false)

@@ -66,6 +66,16 @@ module FirebaseIdToken
       new.request!
     end
 
+    # @deprecated Use only `request!` in favor of Ruby conventions.
+    # It will raise a warning. Kept for compatibility.
+    # @see Certificates.request!
+    def self.request_anyway
+      warn 'WARNING: FirebaseIdToken::Certificates.request_anyway is '\
+        'deprecated. Use FirebaseIdToken::Certificates.request! instead.'
+
+      new.request!
+    end
+
     # Returns `true` if there's certificates data on Redis, `false` otherwise.
     # @example
     #   FirebaseIdToken::Certificates.present? #=> false
