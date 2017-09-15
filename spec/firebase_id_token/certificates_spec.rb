@@ -41,27 +41,27 @@ module FirebaseIdToken
       end
     end
 
-    describe '#request_anyway' do
+    describe '#request!' do
       it 'always requests certificates' do
         expect(HTTParty).to receive(:get).
           with(FirebaseIdToken::Certificates::URL).twice
-        2.times { described_class.request_anyway }
+        2.times { described_class.request! }
       end
 
       it 'sets the certificate expiration time as Redis TTL' do
-        described_class.request_anyway
+        described_class.request!
         expect(redis.ttl('certificates')).to be > 3600
       end
 
       it 'raises a error when certificates expires in less than 1 hour' do
         allow(response).to receive(:headers) {{'cache-control' => low_cache}}
-        expect{ described_class.request_anyway }.
+        expect{ described_class.request! }.
           to raise_error(Exceptions::CertificatesTtlError)
       end
 
       it 'raises a error when HTTP response code is other than 200' do
         allow(response).to receive(:code) { 401 }
-        expect{ described_class.request_anyway }.
+        expect{ described_class.request! }.
           to raise_error(Exceptions::CertificatesRequestError)
       end
     end

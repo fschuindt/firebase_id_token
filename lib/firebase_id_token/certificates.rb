@@ -4,7 +4,7 @@ module FirebaseIdToken
   #
   # ## Download & Access Certificates
   #
-  # It describes two ways to download it: {.request} and {.request_anyway}.
+  # It describes two ways to download it: {.request} and {.request!}.
   # The first will only do something when Redis certificates database is empty,
   # the second one will always request a new download to Google's API and
   # override the database with the response.
@@ -24,10 +24,10 @@ module FirebaseIdToken
   #   FirebaseIdToken::Certificates.request # Won't do anything.
   #   FirebaseIdToken::Certificates.request # Won't do anything either.
   #
-  # @example `.request_anyway` will download always
+  # @example `.request!` will download always
   #   FirebaseIdToken::Certificates.request # Downloads certificates.
-  #   FirebaseIdToken::Certificates.request_anyway # Downloads certificates.
-  #   FirebaseIdToken::Certificates.request_anyway # Downloads certificates.
+  #   FirebaseIdToken::Certificates.request! # Downloads certificates.
+  #   FirebaseIdToken::Certificates.request! # Downloads certificates.
   #
   class Certificates
     # A Redis instance.
@@ -39,15 +39,15 @@ module FirebaseIdToken
     URL = 'https://www.googleapis.com/robot/v1/metadata/x509/'\
       'securetoken@system.gserviceaccount.com'
 
-    # Calls {.request_anyway} only if there are no certificates on Redis. It will
+    # Calls {.request!} only if there are no certificates on Redis. It will
     # return `nil` otherwise.
     #
     # It will raise {Exceptions::CertificatesRequestError} if the request
     # fails or {Exceptions::CertificatesTtlError} when Google responds with a
-    # low TTL, check out {.request_anyway} for more info.
+    # low TTL, check out {.request!} for more info.
     #
     # @return [nil, Hash]
-    # @see Certificates.request_anyway
+    # @see Certificates.request!
     def self.request
       new.request
     end
@@ -62,8 +62,8 @@ module FirebaseIdToken
     # certificate. This is a `SecurityError` and will raise a
     # {Exceptions::CertificatesTtlError}. You are mostly like to never face it.
     # @return [Hash]
-    def self.request_anyway
-      new.request_anyway
+    def self.request!
+      new.request!
     end
 
     # Returns `true` if there's certificates data on Redis, `false` otherwise.
@@ -130,11 +130,11 @@ module FirebaseIdToken
 
     # @see Certificates.request
     def request
-      request_anyway if @local_certs.empty?
+      request! if @local_certs.empty?
     end
 
-    # @see Certificates.request_anyway
-    def request_anyway
+    # @see Certificates.request!
+    def request!
       @request = HTTParty.get URL
       code = @request.code
       if code == 200

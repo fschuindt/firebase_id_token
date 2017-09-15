@@ -13,7 +13,7 @@ require 'firebase_id_token/signature'
 
 # ## List of available methods
 # + {Certificates.request}
-# + {Certificates.request_anyway}
+# + {Certificates.request!}
 # + {Certificates.present?}
 # + {Certificates.all}
 # + {Certificates.ttl}

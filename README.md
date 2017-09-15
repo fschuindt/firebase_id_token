@@ -80,7 +80,7 @@ FirebaseIdToken::Certificates.request
 
 It will download the certificates and save it in Redis, but only if Redis certificates database is empty. To force download and override Redis database, use:
 ```ruby
-FirebaseIdToken::Certificates.request_anyway
+FirebaseIdToken::Certificates.request!
 ```
 
 Google give us information about the certificates expiration time, it's used to set a Redis TTL (Time-To-Live) when saving it. By doing so, the certificates will be automatically deleted after its expiration.
@@ -129,8 +129,8 @@ namespace :firebase do
     end
 
     desc "Request Google's x509 certificates and override Redis"
-    task request_anyway: :environment do
-      FirebaseIdToken::Certificates.request_anyway
+    task request!: :environment do
+      FirebaseIdToken::Certificates.request!
     end
   end
 end
@@ -139,7 +139,7 @@ end
 And in your `config/schedule.rb` you might have:
 ```ruby
 every 1.hour do
-  rake 'firebase:certificates:request_anyway'
+  rake 'firebase:certificates:request!'
 end
 ```
 
