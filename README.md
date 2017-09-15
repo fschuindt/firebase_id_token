@@ -69,6 +69,9 @@ Otherwise, it will use just `Redis.new` as the instance.
 
 ## Usage
 
+You can get a glimpse of it by reading our RSpec output on your machine. It's
+really helpful. But here is a complete guide:
+
 ### Downloading Certificates
 
 Before verifying tokens, you need to download Google's x509 certificates.
