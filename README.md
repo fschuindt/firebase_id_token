@@ -132,7 +132,7 @@ namespace :firebase do
     end
 
     desc "Request Google's x509 certificates and override Redis"
-    task request!: :environment do
+    task force_request: :environment do
       FirebaseIdToken::Certificates.request!
     end
   end
@@ -142,7 +142,7 @@ end
 And in your `config/schedule.rb` you might have:
 ```ruby
 every 1.hour do
-  rake 'firebase:certificates:request!'
+  rake 'firebase:certificates:force_request'
 end
 ```
 
@@ -153,7 +153,7 @@ $ whenever --update-crontab
 
 I recommend running it once every hour or every 30 minutes, it's up to you. Normally the certificates expiration time is around 4 to 6 hours, but it's good to perform it in a small fraction of this time.
 
-When developing and testing you should just run the task:
+When developing, you should just run the task:
 ```
 $ rake firebase:certificates:request
 ```
