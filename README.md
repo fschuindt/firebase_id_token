@@ -10,13 +10,8 @@ A Ruby gem to verify the signature of Firebase ID Tokens. It uses Redis to store
 
 It also checks the JWT payload parameters as recommended [here](https://firebase.google.com/docs/auth/admin/verify-id-tokens) by Firebase official documentation.
 
-## Pre-release Notes
-
-**This gem was developed recently and needs real world feedback.**
-
-If you are going to use it in a production environment, please note that I am still testing it. It has realistic RSpec examples that use real X509 certificates and signed JWT to perform tests and I can say it's working great. But using it implies in security risks, you should be aware.
-
-Feel free to open any issue or to [contact me](https://fschuindt.github.io/blog/about/) regarding its performance.
+Feel free to open any issue or to [contact me](https://fschuindt.github.io/blog/about/) directly.  
+Any contribution is welcome.
 
 ## Docs
 
@@ -34,7 +29,7 @@ gem install firebase_id_token
 
 or in your Gemfile
 ```
-gem 'firebase_id_token', '~> 1.3.0'
+gem 'firebase_id_token', '~> 2.0.0'
 ```
 then
 ```
