@@ -57,7 +57,7 @@ module FirebaseIdToken
       @project_ids = FirebaseIdToken.configuration.project_ids
       @kid = extract_kid(jwt_token)
       @jwt_token = jwt_token
-      self.firebase_id_token_certificates = FirebaseIdToken.configuration.certificates
+      @firebase_id_token_certificates = FirebaseIdToken.configuration.certificates
 
     end
 

@@ -1,16 +1,24 @@
 require 'pry'
 module FirebaseIdToken
   module Testing
-    class Certificates < FirebaseIdToken::Certificates
+    class Certificates
       def self.find(kid)
-        cert = jwt_json['certificate']
+        cert = certificate
         OpenSSL::X509::Certificate.new cert
+      end
+
+      def self.private_key
+        @rsa_private ||= jwt_json['private_key']
+      end
+
+      def self.certificate
+        @certs ||= jwt_json['certificate']
       end
 
       private
 
       def self.jwt_json
-        @certs ||= JSON.parse read_jwt_file
+        @jwt_json ||= JSON.parse read_jwt_file
       end
 
       def self.read_jwt_file
