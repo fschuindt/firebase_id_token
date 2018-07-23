@@ -54,4 +54,9 @@ module FirebaseIdToken
   def self.configure
     yield configuration
   end
+
+  def self.test!
+    require 'firebase_id_token/testing/certificates'
+    self.configuration.certificates = FirebaseIdToken::Testing::Certificates
+  end
 end

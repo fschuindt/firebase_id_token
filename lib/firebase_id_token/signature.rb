@@ -1,3 +1,4 @@
+require 'pry'
 module FirebaseIdToken
   # Deals with verifying if a given Firebase ID Token is signed by one of the
   # Google's x509 certificates that Firebase uses.
@@ -47,6 +48,8 @@ module FirebaseIdToken
       new(jwt_token).verify
     end
 
+    attr_accessor :firebase_id_token_certificates
+
     # Loads attributes: `:project_ids` from {FirebaseIdToken::Configuration},
     # and `:kid`, `:jwt_token` from the related `jwt_token`.
     # @param [String] jwt_token Firebase ID Token
@@ -54,11 +57,13 @@ module FirebaseIdToken
       @project_ids = FirebaseIdToken.configuration.project_ids
       @kid = extract_kid(jwt_token)
       @jwt_token = jwt_token
+      self.firebase_id_token_certificates = FirebaseIdToken.configuration.certificates
+
     end
 
     # @see Signature.verify
     def verify
-      certificate = FirebaseIdToken::Certificates.find(@kid)
+      certificate = firebase_id_token_certificates.find(@kid)
       if certificate
         payload = decode_jwt_payload(@jwt_token, certificate.public_key)
         authorize payload
