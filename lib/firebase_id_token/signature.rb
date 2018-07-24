@@ -1,4 +1,3 @@
-require 'pry'
 module FirebaseIdToken
   # Deals with verifying if a given Firebase ID Token is signed by one of the
   # Google's x509 certificates that Firebase uses.

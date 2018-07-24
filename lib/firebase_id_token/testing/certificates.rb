@@ -1,4 +1,3 @@
-require 'pry'
 module FirebaseIdToken
   module Testing
     class Certificates
