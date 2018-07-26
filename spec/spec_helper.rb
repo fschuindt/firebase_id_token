@@ -7,6 +7,7 @@ require 'redis-namespace'
 require 'httparty'
 require 'jwt'
 require 'firebase_id_token'
+require 'pry'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

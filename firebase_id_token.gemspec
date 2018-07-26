@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'redcarpet', '~> 3.4', '>= 3.4.0'
   spec.add_development_dependency 'simplecov', '~> 0.14.1'
   spec.add_development_dependency 'codeclimate-test-reporter', '~> 1.0', '>= 1.0.0'
+  spec.add_development_dependency 'pry'
 
   spec.add_runtime_dependency 'redis', '~> 4.0', '>= 4.0.1'
   spec.add_runtime_dependency 'redis-namespace', '~> 1.6', '>= 1.6.0'

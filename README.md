@@ -206,6 +206,77 @@ In case you need, here's a example of the payload structure from a Google login 
 
 ```
 
+
+## Development
+The test suite can be run with `bundle exec rake rspec`
+
+
+The test mode is prepared as preparation for the test.
+
+`FirebaseIdToken.test!`
+
+
+By using test mode, the following methods become available.
+
+```ruby
+# RSA PRIVATE KEY
+FirebaseIdToken::Testing::Certificates.private_key
+# CERTIFICATE
+FirebaseIdToken::Testing::Certificates.certificate
+```
+
+CERTIFICATE will always return the same value and will not communicate to google.
+
+
+### Example
+#### Rails test
+
+Describe the following in test_helper.rb etc.
+
+* test_helper
+
+```ruby
+class ActiveSupport::TestCase
+  setup do
+    FirebaseIdToken.test!
+  end
+end
+```
+
+* controller_test
+
+```ruby
+# frozen_string_literal: true
+
+require 'test_helper'
+
+module Api
+  module V1
+    module UsersControllerTest < ActionController::TestCase
+      setup do
+        @routes = Engine.routes
+        @user = users(:one)
+      end
+        
+      def create_token(sub: nil)
+        _payload = payload.merge({sub: sub})
+        JWT.encode _payload, OpenSSL::PKey::RSA.new(FirebaseIdToken::Testing::Certificates.private_key), 'RS256'
+      end
+
+      def payload
+        # payload.json
+      end
+
+      test 'should success get api v1 users ' do
+        get :show, headers: create_token(@user.id)
+        assert_response :success
+      end
+    end
+  end
+end
+```
+
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
