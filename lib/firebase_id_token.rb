@@ -19,6 +19,11 @@ require 'firebase_id_token/signature'
 # + {Certificates.ttl}
 # + {Certificates.find}
 # + {Signature.verify}
+# + {FirebaseIdToken.test!}
+# + {Testing::Certificates.private_key}
+# + {Testing::Certificates.find}
+# + {Testing::Certificates.private_key}
+# + {Testing::Certificates.certificate}
 #
 # ## Configuration
 #
@@ -44,7 +49,7 @@ module FirebaseIdToken
 
   def self.configuration
     @configuration ||= Configuration.new
-  end
+  end 
 
   # Resets Configuration to defaults.
   def self.reset
@@ -55,6 +60,15 @@ module FirebaseIdToken
     yield configuration
   end
 
+  # Method for starting test mode.
+  # You can verify with a test certificate or you can use a test private key to verify the token.
+  # When using, write it at the beginning of the test.
+  # @example
+  #  class ActiveSupport::TestCase
+  #    setup do
+  #      FirebaseIdToken.test!
+  #    end
+  #  end
   def self.test!
     require 'firebase_id_token/testing/certificates'
     self.configuration.certificates = FirebaseIdToken::Testing::Certificates
