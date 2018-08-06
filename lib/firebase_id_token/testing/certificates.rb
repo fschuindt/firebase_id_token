@@ -23,7 +23,7 @@ module FirebaseIdToken
       # Return the secret key defined by Fixture.
       # @return [string]
       # @example `.private_kay`
-      #   "-----BEGIN RSA PRIVATE KEY-----
+      #   '-----BEGIN RSA PRIVATE KEY-----
       #   MIICXAIBAAKBgQCrvJRW05yKQxx3+PdiysRKR/N+VqYv9+b/76C3zC/vk9ACkWTN
       #   /dcPMzIXVIdDMU+r1o8HF3mOXNhCFWGSfZ7r1dMe961BQtxu1DagC7Ff+XZZL0Mu
       #   0W0Y/GmP7yTrsie7wCq4QiHj2HBtUtze/uC6DT8Qcthg46LUJBqeh9FiIwIDAQAB
@@ -37,7 +37,7 @@ module FirebaseIdToken
       #   OmoIIBkp8a05fokv8RW/5bNSzqeULXgGJ+8qWeU6pUiKnxzsYWtJuflhndD5x71M
       #   YtOY+d6oThUONTuUmQJBAMGl/eaFU0AfA+xS/3Kt5JFKBbBVAByhL+Hd/27/rYZ5
       #   8YXDUQAgcykCS21JMrn41p4gwJnpG35PoV8qBIW9a94=
-      #   -----END RSA PRIVATE KEY-----"
+      #   -----END RSA PRIVATE KEY-----'
 
       def self.private_key
         @rsa_private ||= jwt_json['private_key']
@@ -74,7 +74,11 @@ module FirebaseIdToken
       end
 
       def self.read_jwt_file
-        File.read('spec/fixtures/files/jwt.json')
+        File.read(
+          File.expand_path(
+            File.join(FirebaseIdToken::LIB_PATH, '..', 'spec', 'fixtures', 'files', 'jwt.json')
+          )
+        )
       end
     end
   end
