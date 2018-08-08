@@ -246,8 +246,6 @@ end
 * controller_test
 
 ```ruby
-# frozen_string_literal: true
-
 require 'test_helper'
 
 module Api
