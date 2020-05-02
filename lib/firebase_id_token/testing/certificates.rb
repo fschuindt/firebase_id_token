@@ -12,10 +12,10 @@ module FirebaseIdToken
     # + {Certificates.private_key}
     # + {Certificates.certificate}
     class Certificates
-      # `.find` is stabbed to always return the same certificate.
+      # `.find` is stubbed to always return the same certificate.
       # @param [String] kid Key ID
       # @return [nil, OpenSSL::X509::Certificate]
-      def self.find(kid)
+      def self.find(kid, raise_error: false)
         cert = certificate
         OpenSSL::X509::Certificate.new cert
       end

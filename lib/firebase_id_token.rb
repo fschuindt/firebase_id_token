@@ -7,6 +7,7 @@ require 'firebase_id_token/version'
 require 'firebase_id_token/exceptions/no_certificates_error'
 require 'firebase_id_token/exceptions/certificates_request_error'
 require 'firebase_id_token/exceptions/certificates_ttl_error'
+require 'firebase_id_token/exceptions/certificate_not_found'
 require 'firebase_id_token/configuration'
 require 'firebase_id_token/certificates'
 require 'firebase_id_token/signature'
@@ -49,7 +50,7 @@ module FirebaseIdToken
 
   def self.configuration
     @configuration ||= Configuration.new
-  end 
+  end
 
   # Resets Configuration to defaults.
   def self.reset
