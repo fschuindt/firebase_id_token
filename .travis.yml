@@ -1,7 +1,7 @@
 sudo: false
 language: ruby
 rvm:
-  - 2.4.0
-before_install: gem install bundler -v 1.14.6
+  - 2.6.3
+before_install: gem install bundler -v 1.11.2
 services:
   - redis-server
