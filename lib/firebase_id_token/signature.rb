@@ -42,9 +42,25 @@ module FirebaseIdToken
     # Note that it will raise a {Exceptions::NoCertificatesError} if the Redis
     # certificates database is empty. Ensure to call {Certificates.request}
     # before, ideally in a background job if you are using Rails.
+    #
+    # If you would like this to raise and error, rather than silently failing,
+    # you can with the `raise_error` parameter. Example:
+    #
+    #   FirebaseIdToken::Signature
+    #     .verify(token, raise_error: Rails.env.development?)
+    #
+    # @param raise_error [Boolean] default: false
     # @return [nil, Hash]
-    def self.verify(jwt_token)
-      new(jwt_token).verify
+    def self.verify(jwt_token, raise_error: false)
+      new(jwt_token, raise_error: raise_error).verify
+    end
+
+    # Equivalent to `.verify(jwt_token, raise_error: true)`.
+    #
+    # @see {Signature.verify}
+    # @return [Hash]
+    def self.verify!(jwt_token)
+      new(jwt_token, raise_error: true).verify
     end
 
     attr_accessor :firebase_id_token_certificates
@@ -52,21 +68,21 @@ module FirebaseIdToken
     # Loads attributes: `:project_ids` from {FirebaseIdToken::Configuration},
     # and `:kid`, `:jwt_token` from the related `jwt_token`.
     # @param [String] jwt_token Firebase ID Token
-    def initialize(jwt_token)
+    def initialize(jwt_token, raise_error: false)
+      @raise_error = raise_error
       @project_ids = FirebaseIdToken.configuration.project_ids
       @kid = extract_kid(jwt_token)
       @jwt_token = jwt_token
       @firebase_id_token_certificates = FirebaseIdToken.configuration.certificates
-
     end
 
     # @see Signature.verify
     def verify
-      certificate = firebase_id_token_certificates.find(@kid)
-      if certificate
-        payload = decode_jwt_payload(@jwt_token, certificate.public_key)
-        authorize payload
-      end
+      certificate = firebase_id_token_certificates.find(@kid, raise_error: @raise_error)
+      return unless certificate
+
+      payload = decode_jwt_payload(@jwt_token, certificate.public_key)
+      authorize payload
     end
 
     private
@@ -74,13 +90,17 @@ module FirebaseIdToken
     def extract_kid(jwt_token)
       JWT.decode(jwt_token, nil, false).last['kid']
     rescue StandardError
-      'none'
+      return 'none' unless @raise_error
+
+      raise
     end
 
     def decode_jwt_payload(token, cert_key)
       JWT.decode(token, cert_key, true, JWT_DEFAULTS).first
     rescue StandardError
-      nil
+      return nil unless @raise_error
+
+      raise
     end
 
     def authorize(payload)

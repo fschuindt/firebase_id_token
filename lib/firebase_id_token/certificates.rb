@@ -111,13 +111,34 @@ module FirebaseIdToken
     #   FirebaseIdToken::Certificates.request
     #   cert = FirebaseIdToken::Certificates.find "1d6d01f4w7d54c7[...]"
     #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
-    def self.find(kid)
+    def self.find(kid, raise_error: false)
       certs = new.local_certs
       raise Exceptions::NoCertificatesError if certs.empty?
 
-      if certs[kid]
-        OpenSSL::X509::Certificate.new certs[kid]
-      end
+      return OpenSSL::X509::Certificate.new certs[kid] if certs[kid]
+
+      return unless raise_error
+
+      raise Exceptions::CertificateNotFound,
+        "Unable to find a certificate with `#{kid}`."
+    end
+
+    # Returns a `OpenSSL::X509::Certificate` object of the requested Key ID
+    # (KID) if there's one.
+    #
+    # @raise {Exceptions::CertificateNotFound} if it cannot be found.
+    #
+    # @raise {Exceptions::NoCertificatesError} if the Redis certificates
+    # database is empty.
+    #
+    # @param [String] kid Key ID
+    # @return [OpenSSL::X509::Certificate]
+    # @example
+    #   FirebaseIdToken::Certificates.request
+    #   cert = FirebaseIdToken::Certificates.find! "1d6d01f4w7d54c7[...]"
+    #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
+    def self.find!(kid)
+      find(kid, raise_error: true)
     end
 
     # Returns the current certificates TTL (Time-To-Live) in seconds. *Zero
