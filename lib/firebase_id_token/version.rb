@@ -1,3 +1,3 @@
 module FirebaseIdToken
-  VERSION = '2.4.0'
+  VERSION = '2.5.1'
 end
