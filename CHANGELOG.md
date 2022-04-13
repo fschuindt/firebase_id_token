@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2022-04-13
+
+### Fixed
+- Local Code Execution through Argument Injection via dash leading git url parameter in Gemfile [CVE-2021-43809](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-43809).
+- Dependency Confusion in Bundler [CVE-2020-36327](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-36327).
+- Insecure path handling in Bundler [CVE-2019-3881](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-3881).
+
+### Changed
+- Using Bundler 2.3.11.
+- Using `Time.current` instead of `Time.now` to work with timezones [PR 34](https://github.com/fschuindt/firebase_id_token/pull/34).
+- Caching certificates on memory using `Thread` to avoid unnecessary calls into Redis [PR 33](https://github.com/fschuindt/firebase_id_token/pull/33).
+
 ## [2.4.0] - 2020-05-02
 
 ### Fixed
@@ -97,6 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2017-04-23
 *Version removed.*
 
+[2.5.0]: https://github.com/fschuindt/firebase_id_token/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/fschuindt/firebase_id_token/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/fschuindt/firebase_id_token/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/fschuindt/firebase_id_token/compare/2.3.0...2.3.1
