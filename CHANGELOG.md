@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2022-08-15
+
+### Fixed
+- "[New caching doesn't honor request! calls](https://github.com/fschuindt/firebase_id_token/issues/35)", by reverting "[Caching certificates on memory.](https://github.com/fschuindt/firebase_id_token/pull/33)", PR #33.
+
 ## [2.5.0] - 2022-04-13
 
 ### Fixed
@@ -109,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2017-04-23
 *Version removed.*
 
+[2.5.1]: https://github.com/fschuindt/firebase_id_token/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/fschuindt/firebase_id_token/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/fschuindt/firebase_id_token/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/fschuindt/firebase_id_token/compare/2.3.1...2.3.2

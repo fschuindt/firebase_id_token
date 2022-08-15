@@ -78,20 +78,7 @@ module FirebaseIdToken
 
     # @see Signature.verify
     def verify
-      var_name = :_firebase_id_token_cert
-      Thread.current[var_name] ||= {
-        cert: nil,
-        expires_at: Time.now.utc - 1
-      }
-
-      if Thread.current[var_name][:expires_at] <= Time.now.utc
-        Thread.current[var_name] = {
-          cert: firebase_id_token_certificates.find(@kid, raise_error: @raise_error),
-          expires_at: Time.now.utc + firebase_id_token_certificates.ttl
-        }
-      end
-
-      certificate = Thread.current[var_name][:cert]
+      certificate = firebase_id_token_certificates.find(@kid, raise_error: @raise_error)
       return unless certificate
 
       payload = decode_jwt_payload(@jwt_token, certificate.public_key)
