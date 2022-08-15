@@ -80,10 +80,6 @@ module FirebaseIdToken
           )
         )
       end
-
-      def self.ttl
-        10
-      end
     end
   end
 end
