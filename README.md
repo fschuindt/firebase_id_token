@@ -182,6 +182,10 @@ More details [here](https://github.com/fschuindt/firebase_id_token/issues/29).
 
 If you try to verify a signature without any certificates in Redis database it will raise a `FirebaseIdToken::Exceptions::NoCertificatesError`.
 
+##### "I keep on getting `nil` on `verify`"
+
+Poorly synchronized clocks will sometimes make the server think the token's `iat` is on the future, which will render the token as invalid. Make sure your server's or development system's clock is correctly set. On Mac OS, some people reported success by unchecking and checking the "Set date and time automatticaly" configuration checkbox. See [here](https://github.com/fschuindt/firebase_id_token/issues/21#issuecomment-623133926).
+
 #### Payload Structure
 
 In case you need, here's a example of the payload structure from a Google login in JSON.

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Explains on `README.md` about the behavior of `verify` on expired tokens. [Details here](https://github.com/fschuindt/firebase_id_token/issues/29).
+- Warns about the poorly synchronized clocks issue with the token's `iat`. [Details here](https://github.com/fschuindt/firebase_id_token/issues/21#issuecomment-623133926).
 
 ### Changed
 - It won't default to `Redis.new` anymore. You must now provide Redis details during configuration. [Details here](https://github.com/fschuindt/firebase_id_token/issues/30).
