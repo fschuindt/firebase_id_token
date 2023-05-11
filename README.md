@@ -1,5 +1,6 @@
 # Ruby Firebase ID Token verifier (pre-release)
 
+[![Actions Status](https://github.com/fschuindt/firebase_id_token/workflows/Test/badge.svg?branch=master)](https://github.com/fschuindt/firebase_id_token/actions?query=workflow%3ATest)
 [![Code Climate](https://codeclimate.com/github/fschuindt/firebase_id_token/badges/gpa.svg)](https://codeclimate.com/github/fschuindt/firebase_id_token)
 [![Issue Count](https://codeclimate.com/github/fschuindt/firebase_id_token/badges/issue_count.svg)](https://codeclimate.com/github/fschuindt/firebase_id_token)
 [![Test Coverage](https://codeclimate.com/github/fschuindt/firebase_id_token/badges/coverage.svg)](https://codeclimate.com/github/fschuindt/firebase_id_token/coverage)
