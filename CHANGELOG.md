@@ -7,11 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- CI testing using GitHub Actions.
 - Explains on `README.md` about the behavior of `verify` on expired tokens. [Details here](https://github.com/fschuindt/firebase_id_token/issues/29).
 - Warns about the poorly synchronized clocks issue with the token's `iat`. [Details here](https://github.com/fschuindt/firebase_id_token/issues/21#issuecomment-623133926).
+- Gives better examples when testing. [Details here](https://github.com/fschuindt/firebase_id_token/pull/38).
+- Created a `.ruby-version` file.
+- Added ActiveSupport as dependency for `Time.current`.
+- SimpleCov JSON formatter and `json` as dependency.
 
 ### Changed
 - It won't default to `Redis.new` anymore. You must now provide Redis details during configuration. [Details here](https://github.com/fschuindt/firebase_id_token/issues/30).
+- Upgraded Redis to 5.0.6.
+- Upgraded Redis Namespace to 1.10.
+- Upgraded HTTParty to 0.21.0.
+- Upgraded JWT to 2.7.
+- Upgraded [Dev] Ruby to 3.2.2.
+- Upgraded [Dev] Bundler to 2.4.13.
+- Upgraded [Dev] Rake to 13.0.6.
+- Upgraded [Dev] RSpec to 3.12.
+- Upgraded [Dev] Redcarpet to 3.6.
+- Upgraded [Dev] Simplecov to 0.22.0.
+- Upgraded [Dev] Pry to 0.14.2.
+
+### Fixed
+- Code Climate test coverage report.
+
+### Removed
+- Travis CI badge.
 
 ## [2.5.2] - 2023-04-09
 
