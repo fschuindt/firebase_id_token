@@ -164,7 +164,23 @@ FirebaseIdToken::Signature.verify('aaaaaa')
 => nil
 ```
 
-**WARNING:** If you try to verify a signature without any certificates in Redis database it will raise a `FirebaseIdToken::Exceptions::NoCertificatesError`.
+#### WARNING!
+
+##### Expired tokens can point to long gone certificates
+
+Notice that often when the token have expired, the Firebase certificate can be already missing from the Firebase servers. In these cases, `verify` will return `nil`.
+
+If you want to take specific actions, here's a solution suggested by the user [cfanpnk](https://github.com/fschuindt/firebase_id_token/issues/29#issuecomment-751137511):
+
+1. Use `verify!` to raise an exception.
+2. Rescue `FirebaseIdToken::Exceptions::CertificateNotFound` and return `401`.
+3. The client app will refresh the token if expired.
+
+More details [here](https://github.com/fschuindt/firebase_id_token/issues/29).
+
+##### Trying to verify tokens without downloaded certificates will raise an error
+
+If you try to verify a signature without any certificates in Redis database it will raise a `FirebaseIdToken::Exceptions::NoCertificatesError`.
 
 #### Payload Structure
 
