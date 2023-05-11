@@ -22,16 +22,17 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 2.3', '>= 2.3.11'
-  spec.add_development_dependency 'rake', '~> 12.3', '>= 12.3.3'
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'redcarpet', '~> 3.4', '>= 3.4.0'
-  spec.add_development_dependency 'simplecov', '~> 0.14.1'
-  spec.add_development_dependency 'codeclimate-test-reporter', '~> 1.0', '>= 1.0.0'
-  spec.add_development_dependency 'pry', '~> 0.12.2'
+  spec.add_development_dependency 'bundler', '~> 2.4', '>= 2.4.13'
+  spec.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
+  spec.add_development_dependency 'rspec', '~> 3.12'
+  spec.add_development_dependency 'redcarpet', '~> 3.6'
+  spec.add_development_dependency 'simplecov', '~> 0.22.0'
+  spec.add_development_dependency 'pry', '~> 0.14.2'
 
-  spec.add_runtime_dependency 'redis', '~> 4.0', '>= 4.0.1'
-  spec.add_runtime_dependency 'redis-namespace', '~> 1.6', '>= 1.6.0'
-  spec.add_dependency 'httparty', '~> 0.21', '>= 0.16.2'
-  spec.add_runtime_dependency 'jwt', '~> 2.1', '>= 2.1.0'
+  spec.add_runtime_dependency 'redis', '~> 5.0', '>= 5.0.6'
+  spec.add_runtime_dependency 'redis-namespace', '~> 1.10'
+  spec.add_dependency 'httparty', '~> 0.21.0'
+  spec.add_runtime_dependency 'jwt', '~> 2.7'
+  spec.add_runtime_dependency 'activesupport', '~> 7.0', '>= 7.0.4.3'
+  spec.add_runtime_dependency 'json', '~> 2.6', '>= 2.6.3'
 end
