@@ -43,24 +43,15 @@ It's needed to set up your Firebase Project ID.
 If you are using Rails, this should probably go into `config/initializers/firebase_id_token.rb`.
 ```ruby
 FirebaseIdToken.configure do |config|
+  config.redis = Redis.new
   config.project_ids = ['your-firebase-project-id']
 end
 ```
 
-`project_ids` must be a Array.
+- `redis` with a `Redis` instance must be supplied. You can configure your Redis details here. Example: `Redis.new(host: '10.0.1.1', port: 6380, db: 15)`.
+- `project_ids` must be a Array.
 
 *If you want to verify signatures from more than one Firebase project, just add more Project IDs to the list.*
-
-You can also pass a Redis instance to `config` if you are not using Redis defaults.  
-In this case, you must have the gem `redis` in your `Gemfile`.
-```ruby
-FirebaseIdToken.configure do |config|
-  config.project_ids = ['your-firebase-project-id']
-  config.redis = Redis.new(host: '10.0.1.1', port: 6380, db: 15)
-end
-```
-
-Otherwise, it will use just `Redis.new` as the instance.
 
 ## Usage
 

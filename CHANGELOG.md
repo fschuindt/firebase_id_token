@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.5.2] - 2023-03-16
+### Changed
+- It won't default to `Redis.new` anymore. You must now provide Redis details during configuration. [Details here](https://github.com/fschuindt/firebase_id_token/issues/30).
+
+## [2.5.2] - 2023-04-09
 
 ### Fixed
 - [CWE-472](https://github.com/fschuindt/firebase_id_token/pull/41).
