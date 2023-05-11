@@ -191,15 +191,15 @@ Poorly synchronized clocks will sometimes make the server think the token's `iat
 In case you need, here's a example of the payload structure from a Google login in JSON.
 ```json
 {  
-   "iss":"https://securetoken.google.com/firebase-id-token",
+   "iss":"https://securetoken.google.com/{{YOUR_FIREBASE_APP_ID}}",
    "name":"Ugly Bob",
    "picture":"https://someurl.com/photo.jpg",
-   "aud":"firebase-id-token",
+   "aud":"{{YOUR_FIREBASE_APP_ID}}",
    "auth_time":1492981192,
    "user_id":"theUserID",
    "sub":"theUserID",
-   "iat":1492981200,
-   "exp":33029000017,
+   "iat":1492981200, // needs to be in the past
+   "exp":33029000017, // needs to be in the future
    "email":"uglybob@emailurl.com",
    "email_verified":true,
    "firebase":{  
@@ -216,7 +216,7 @@ In case you need, here's a example of the payload structure from a Google login 
 }
 
 ```
-
+If using this payload for testing purpose, make sure you replace indicated fields with the correct values.
 
 ## Development
 The test suite can be run with `bundle exec rake rspec`
