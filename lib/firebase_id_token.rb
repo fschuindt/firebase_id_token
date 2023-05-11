@@ -2,6 +2,8 @@ require 'redis'
 require 'redis-namespace'
 require 'httparty'
 require 'jwt'
+require 'active_support'
+require 'active_support/time'
 
 require 'firebase_id_token/version'
 require 'firebase_id_token/exceptions/no_certificates_error'
