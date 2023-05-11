@@ -19,7 +19,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2.2'
-          bundler-cache: true
+      - name: Install Bundler
+        run: gem install bundler:2.4.13
+      - name: Install Dependencies
+        run: bundle install
       - name: Run tests
         run: bundle exec rspec
       - name: Publish code coverage
