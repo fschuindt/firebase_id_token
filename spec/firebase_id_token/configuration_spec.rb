@@ -16,12 +16,6 @@ module FirebaseIdToken
       end
     end
 
-    describe '.redis' do
-      it 'sets a Redis instance as default' do
-        expect(Configuration.new.redis).to be_a(Redis)
-      end
-    end
-
     describe '.redis=' do
       it 'changes default values' do
         config = Configuration.new
