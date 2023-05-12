@@ -1,4 +1,4 @@
-# Ruby Firebase ID Token verifier (pre-release)
+# Ruby Firebase ID Token verifier
 
 [![Actions Status](https://github.com/fschuindt/firebase_id_token/workflows/Test/badge.svg?branch=master)](https://github.com/fschuindt/firebase_id_token/actions?query=workflow%3ATest)
 [![Test Coverage](https://codeclimate.com/github/fschuindt/firebase_id_token/badges/coverage.svg)](https://codeclimate.com/github/fschuindt/firebase_id_token/coverage)
