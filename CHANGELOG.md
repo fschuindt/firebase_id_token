@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing.
+
+## [3.0.0] - 2023-04-11
+
 ### Added
 - CI testing using GitHub Actions.
 - Explains on `README.md` about the behavior of `verify` on expired tokens. [Details here](https://github.com/fschuindt/firebase_id_token/issues/29).
@@ -148,6 +152,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2017-04-23
 *Version removed.*
 
+[3.0.0]: https://github.com/fschuindt/firebase_id_token/compare/2.5.2...3.0.0
+[2.5.2]: https://github.com/fschuindt/firebase_id_token/compare/2.5.1...2.5.2
 [2.5.1]: https://github.com/fschuindt/firebase_id_token/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/fschuindt/firebase_id_token/compare/2.4.0...2.5.0
 [2.4.0]: https://github.com/fschuindt/firebase_id_token/compare/2.3.2...2.4.0
