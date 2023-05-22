@@ -1,22 +1,22 @@
 module FirebaseIdToken
   # Manage download and access of Google's x509 certificates. Keeps
-  # certificates on a Redis namespace database.
+  # certificates on an ActiveSupport cache.
   #
   # ## Download & Access Certificates
   #
   # It describes two ways to download it: {.request} and {.request!}.
-  # The first will only do something when Redis certificates database is empty,
+  # The first will only do something when the certificates cache is empty,
   # the second one will always request a new download to Google's API and
   # override the database with the response.
   #
   # It's important to note that when saving a set of certificates, it will also
-  # set a Redis expiration time to match Google's API header `expires`. **After
-  # this time went out, Redis will automatically delete those certificates.**
+  # set a expiration time to match Google's API header `expires`. **After
+  # this time went out, the cache will no longer provide those certificates.**
   #
   # *To know how many seconds left until the expiration you can use {.ttl}.*
   #
   # When comes to accessing it, you can either use {.present?} to check if
-  # there's any data inside Redis certificates database or {.all} to obtain an
+  # there's any data inside the cache or {.all} to obtain an
   # `Array` of current certificates.
   #
   # @example `.request` will only download once
@@ -32,14 +32,14 @@ module FirebaseIdToken
   class Certificates
     # A common cache store
     attr_reader :cache_store
-    # Certificates saved in the Redis (JSON `String` or `nil`).
+    # Certificates saved in the cache (JSON `String` or `nil`).
     attr_reader :local_certs
 
     # Google's x509 certificates API URL.
     URL = 'https://www.googleapis.com/robot/v1/metadata/x509/'\
       'securetoken@system.gserviceaccount.com'
 
-    # Calls {.request!} only if there are no certificates on Redis. It will
+    # Calls {.request!} only if there are no certificates in the cache. It will
     # return `nil` otherwise.
     #
     # It will raise {Exceptions::CertificatesRequestError} if the request
@@ -53,7 +53,7 @@ module FirebaseIdToken
     end
 
     # Triggers a HTTPS request to Google's x509 certificates API. If it
-    # responds with a status `200 OK`, saves the request body into Redis and
+    # responds with a status `200 OK`, saves the request body into the cache and
     # returns it as a `Hash`.
     #
     # Otherwise it will raise a {Exceptions::CertificatesRequestError}.
@@ -76,7 +76,7 @@ module FirebaseIdToken
       new.request!
     end
 
-    # Returns `true` if there's certificates data on Redis, `false` otherwise.
+    # Returns `true` if there's certificates data in the cache, `false` otherwise.
     # @example
     #   FirebaseIdToken::Certificates.present? #=> false
     #   FirebaseIdToken::Certificates.request
@@ -88,8 +88,8 @@ module FirebaseIdToken
     # Returns an array of hashes, each hash is a single `{key => value}` pair
     # containing the certificate KID `String` as key and a
     # `OpenSSL::X509::Certificate` object of the respective certificate as
-    # value. Returns a empty `Array` when there's no certificates data on
-    # Redis.
+    # value. Returns a empty `Array` when there's no certificates data in
+    # the cache.
     # @return [Array]
     # @example
     #   FirebaseIdToken::Certificates.request
@@ -103,8 +103,8 @@ module FirebaseIdToken
     # Returns a `OpenSSL::X509::Certificate` object of the requested Key ID
     # (KID) if there's one. Returns `nil` otherwise.
     #
-    # It will raise a {Exceptions::NoCertificatesError} if the Redis
-    # certificates database is empty.
+    # It will raise a {Exceptions::NoCertificatesError} if the
+    # certificates cache is empty.
     # @param [String] kid Key ID
     # @return [nil, OpenSSL::X509::Certificate]
     # @example
@@ -128,8 +128,8 @@ module FirebaseIdToken
     #
     # @raise {Exceptions::CertificateNotFound} if it cannot be found.
     #
-    # @raise {Exceptions::NoCertificatesError} if the Redis certificates
-    # database is empty.
+    # @raise {Exceptions::NoCertificatesError} if the certificates cache
+    # is empty.
     #
     # @param [String] kid Key ID
     # @return [OpenSSL::X509::Certificate]
@@ -155,8 +155,8 @@ module FirebaseIdToken
       raise Exceptions::UnsupportedCacheOperationError.new
     end
 
-    # Sets two instance attributes: `:redis` and `:local_certs`. Those are
-    # respectively a Redis instance from {FirebaseIdToken::Configuration} and
+    # Sets two instance attributes: `:cach_store` and `:local_certs`. Those are
+    # respectively a cache instance from {FirebaseIdToken::Configuration} and
     # the certificates in it.
     def initialize
       @cache_store = FirebaseIdToken.configuration.cache_store

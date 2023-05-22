@@ -6,20 +6,16 @@
 [![Issue Count](https://codeclimate.com/github/fschuindt/firebase_id_token/badges/issue_count.svg)](https://codeclimate.com/github/fschuindt/firebase_id_token)
 [![Inline docs](http://inch-ci.org/github/fschuindt/firebase_id_token.svg?branch=master)](http://inch-ci.org/github/fschuindt/firebase_id_token)
 
-A Ruby gem to verify the signature of Firebase ID Tokens (JWT). It uses Redis to store Google's x509 certificates and manage their expiration time, so you don't need to request Google's API in every execution and can access it as fast as reading from memory.
+A Ruby gem to verify the signature of Firebase ID Tokens (JWT). It uses ActiveSupport::Cache to store Google's x509 certificates and manage their expiration time, so you don't need to request Google's API in every execution and can access it as fast as reading from memory.
 
 It also checks the JWT payload parameters as recommended [here](https://firebase.google.com/docs/auth/admin/verify-id-tokens) by Firebase official documentation.
 
-Feel free to open any issue or to [contact me](https://fschuindt.github.io/blog/about/) directly.  
+Feel free to open any issue or to [contact me](https://fschuindt.github.io/blog/about/) directly.
 Any contribution is welcome.
 
 ## Docs
 
  + http://www.rubydoc.info/gems/firebase_id_token
-
-## Requirements
-
-+ Redis
 
 ## Installing
 
@@ -43,12 +39,17 @@ It's needed to set up your Firebase Project ID.
 If you are using Rails, this should probably go into `config/initializers/firebase_id_token.rb`.
 ```ruby
 FirebaseIdToken.configure do |config|
-  config.redis = Redis.new
+  config.cache_store = ActiveSupport::Cache::RedisCacheStore.new
   config.project_ids = ['your-firebase-project-id']
 end
 ```
 
-- `redis` with a `Redis` instance must be supplied. You can configure your Redis details here. Example: `Redis.new(host: '10.0.1.1', port: 6380, db: 15)`.
+- A cache store instance inheriting from [ActiveSupport::Cache::Store](https://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html) must be supplied.
+  - Examples:
+    - `ActiveSupport::Cache::RedisCacheStore.new(Redis.new(host: '10.0.1.1', port: 6380, db: 15))`
+    - `ActiveSupport::Cache::RedisCacheStore.new(namespace: "firebase_auth")`
+    - `ActiveSupport::Cache::FileStore.new("cache", namespace: "firebase_auth")`
+    - `Rails.cache`
 - `project_ids` must be an Array.
 
 *If you want to verify signatures from more than one Firebase project, just add more Project IDs to the list.*
@@ -67,22 +68,22 @@ To do it, simply:
 FirebaseIdToken::Certificates.request
 ```
 
-It will download the certificates and save it in Redis, but only if the Redis certificates database is empty. To force download and override of the Redis database, use:
+It will download the certificates and save it in cache, but only if the cache certificates database is empty. To force download and override of the cache entries, use:
 ```ruby
 FirebaseIdToken::Certificates.request!
 ```
 
-Google give us information about the certificates' expiration time, it's used to set a Redis TTL (Time-To-Live) when saving it. By doing so, the certificates will be automatically deleted after its expiration.
+Google give us information about the certificates' expiration time, it's used to set a cache TTL (Time-To-Live) when saving it. By doing so, the certificates will be automatically deleted after its expiration.
 
 #### Certificates Info
 
-Checks the presence of certificates in the Redis database.
+Checks the presence of certificates in the cache.
 ```ruby
 FirebaseIdToken::Certificates.present?
 => true
 ```
 
-How many seconds until the certificate's expiration.
+How many seconds until the certificate's expiration. _NOTE_: Currently only functional when using Redis
 ```ruby
 FirebaseIdToken::Certificates.ttl
 => 22352
@@ -112,12 +113,12 @@ Create your task in `lib/tasks/firebase.rake`:
 ```ruby
 namespace :firebase do
   namespace :certificates do
-    desc "Request Google's x509 certificates when Redis is empty"
+    desc "Request Google's x509 certificates when the cache is empty"
     task request: :environment do
       FirebaseIdToken::Certificates.request
     end
 
-    desc "Request Google's x509 certificates and override Redis"
+    desc "Request Google's x509 certificates and override the cache"
     task force_request: :environment do
       FirebaseIdToken::Certificates.request!
     end
@@ -144,7 +145,7 @@ When developing, you should just run the task:
 $ rake firebase:certificates:request
 ```
 
-*You need Redis to be running.*
+*You need Redis to be running if you're using RedisCacheStore*
 
 ### Verifying Tokens
 
@@ -180,7 +181,7 @@ More details [here](https://github.com/fschuindt/firebase_id_token/issues/29).
 
 ##### Trying to verify tokens without downloaded certificates will raise an error
 
-If you try to verify a signature without any certificates in Redis database, it will raise a `FirebaseIdToken::Exceptions::NoCertificatesError`.
+If you try to verify a signature without any certificates in the cache, it will raise a `FirebaseIdToken::Exceptions::NoCertificatesError`.
 
 ##### "I keep on getting `nil` on `verify`"
 
@@ -190,7 +191,7 @@ Poorly synchronized clocks will sometimes make the server think the token's `iat
 
 In case you need, here's a example of the payload structure from a Google login in JSON.
 ```json
-{  
+{
    "iss":"https://securetoken.google.com/{{YOUR_FIREBASE_APP_ID}}",
    "name":"Ugly Bob",
    "picture":"https://someurl.com/photo.jpg",
@@ -202,12 +203,12 @@ In case you need, here's a example of the payload structure from a Google login 
    "exp":33029000017, // needs to be in the future
    "email":"uglybob@emailurl.com",
    "email_verified":true,
-   "firebase":{  
-      "identities":{  
-         "google.com":[  
+   "firebase":{
+      "identities":{
+         "google.com":[
             "1010101010101010101"
          ],
-         "email":[  
+         "email":[
             "uglybob@emailurl.com"
          ]
       },
@@ -268,7 +269,7 @@ module Api
         @routes = Engine.routes
         @user = users(:one)
       end
-        
+
       def create_token(sub: nil)
         _payload = payload.merge({sub: sub})
         JWT.encode _payload, OpenSSL::PKey::RSA.new(FirebaseIdToken::Testing::Certificates.private_key), 'RS256'

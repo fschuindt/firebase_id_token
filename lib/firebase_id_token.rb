@@ -30,20 +30,18 @@ require 'firebase_id_token/signature'
 #
 # ## Configuration
 #
-# You need to set your Firebase Project ID. Additionally you can set your Redis
-# server instance in case you don't use Redis defaults.
+# You need to set your Firebase Project ID and cache store.
 #
 # **WARNING:** Your `project_ids` must be a `Array`.
 # ```
 # FirebaseIdToken.configure do |config|
 #   config.project_ids = ['my-project-id', 'another-project-id']
-#   congig.redis = Redis.new(:host => "10.0.1.1", :port => 6380, :db => 15)
+#   congig.cache_store = ActiveSupport::Cache::RedisCacheStore.new
 # end
 # ```
 #
 # **Defaults**
 # + `project_ids` => `[]`
-# + `redis` => `Redis.new`
 #
 module FirebaseIdToken
   class << self
