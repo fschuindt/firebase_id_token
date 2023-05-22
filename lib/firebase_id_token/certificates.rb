@@ -30,8 +30,8 @@ module FirebaseIdToken
   #   FirebaseIdToken::Certificates.request! # Downloads certificates.
   #
   class Certificates
-    # A Redis instance.
-    attr_reader :redis
+    # A common cache store
+    attr_reader :cache_store
     # Certificates saved in the Redis (JSON `String` or `nil`).
     attr_reader :local_certs
 
@@ -146,16 +146,20 @@ module FirebaseIdToken
     # time, use it to know when to request again.
     # @return [Fixnum]
     def self.ttl
-      ttl = new.redis.ttl('certificates')
-      ttl < 0 ? 0 : ttl
+      if new.cache_store.respond_to?(:redis)
+        ttl = new.cache_store.redis.ttl('certificates')
+        return ttl < 0 ? 0 : ttl
+      end
+      # Not all cache stores supported by ActiveSupport::Cache support a TTL
+      # read on an entrye
+      raise Exceptions::UnsupportedCacheOperationError.new
     end
 
     # Sets two instance attributes: `:redis` and `:local_certs`. Those are
     # respectively a Redis instance from {FirebaseIdToken::Configuration} and
     # the certificates in it.
     def initialize
-      @redis = Redis::Namespace.new('firebase_id_token',
-        redis: FirebaseIdToken.configuration.redis)
+      @cache_store = FirebaseIdToken.configuration.cache_store
       @local_certs = read_certificates
     end
 
@@ -178,12 +182,12 @@ module FirebaseIdToken
     private
 
     def read_certificates
-      certs = @redis.get 'certificates'
+      certs = @cache_store.read 'certificates'
       certs ? JSON.parse(certs) : {}
     end
 
     def save_certificates
-      @redis.setex 'certificates', ttl, @request.body
+      @cache_store.write 'certificates', @request.body, expires_in: ttl
       @local_certs = read_certificates
     end
 

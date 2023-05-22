@@ -4,7 +4,7 @@ module FirebaseIdToken
   LIB_PATH = File.expand_path('../../', __FILE__)
 
   class Configuration
-    attr_accessor :redis, :project_ids, :certificates
+    attr_accessor :redis, :project_ids, :certificates, :cache_store
 
     def initialize
       @project_ids = []
