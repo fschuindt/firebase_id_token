@@ -10,13 +10,13 @@ module FirebaseIdToken
   #
   # ## Verifying a Firebase ID Token
   #
-  # *Be sure to configure the gem to set your Firebase Project ID and a Redis
-  # server before move any forward.*
+  # *Be sure to configure the gem to set your Firebase Project ID cache
+  # store.*
   #
   # **See the README for a complete guide.**
   #
   # **WARNING:** Trying to verify a token without any certificate saved in
-  # Redis certificates database raises a {Exceptions::NoCertificatesError}.
+  # the cache raises a {Exceptions::NoCertificatesError}.
   #
   # @example
   #   FirebaseIdToken::Signature.verify(thrusty_token)
@@ -39,8 +39,8 @@ module FirebaseIdToken
     # JWT fields are valid, as recommended [here](https://goo.gl/yOrZZX) by
     # Firebase official documentation.
     #
-    # Note that it will raise a {Exceptions::NoCertificatesError} if the Redis
-    # certificates database is empty. Ensure to call {Certificates.request}
+    # Note that it will raise a {Exceptions::NoCertificatesError} if the cache
+    # is empty. Ensure to call {Certificates.request}
     # before, ideally in a background job if you are using Rails.
     #
     # If you would like this to raise and error, rather than silently failing,

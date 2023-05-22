@@ -29,13 +29,13 @@ module FirebaseIdToken
       end
 
       describe '#request' do
-        it 'requests certificates when Redis database is empty' do
+        it 'requests certificates when the cache is empty' do
           expect(HTTParty).to receive(:get).
             with(FirebaseIdToken::Certificates::URL)
           described_class.request
         end
 
-        it 'does not requests certificates when Redis database is written' do
+        it 'does not requests certificates when the cache is written' do
           expect(HTTParty).to receive(:get).
             with(FirebaseIdToken::Certificates::URL).once
           2.times { described_class.request }
@@ -49,7 +49,7 @@ module FirebaseIdToken
           2.times { described_class.request! }
         end
 
-        it 'sets the certificate expiration time as Redis TTL', skip: !cache_store_supports_ttl do
+        it 'sets the certificate expiration time as the cache TTL', skip: !cache_store_supports_ttl do
           described_class.request!
           expect(described_class.ttl).to be > 3600
         end
@@ -77,11 +77,11 @@ module FirebaseIdToken
       end
 
       describe '.present?' do
-        it 'returns false when Redis database is empty' do
+        it 'returns false when the cache is empty' do
           expect(described_class.present?).to be(false)
         end
 
-        it 'returns true when Redis database is written' do
+        it 'returns true when the cache is written' do
           described_class.request
           expect(described_class.present?).to be(true)
         end
@@ -109,14 +109,14 @@ module FirebaseIdToken
       end
 
       describe '.find' do
-        context 'without certificates in Redis database' do
+        context 'without certificates in the cache' do
           it 'raises a exception' do
             expect{ described_class.find(kid)}.
               to raise_error(Exceptions::NoCertificatesError)
           end
         end
 
-        context 'with certificates in Redis database' do
+        context 'with certificates in the cache' do
           it 'returns a OpenSSL::X509::Certificate when it finds the kid' do
             described_class.request
             expect(described_class.find(kid)).to be_a(OpenSSL::X509::Certificate)
@@ -130,13 +130,13 @@ module FirebaseIdToken
       end
 
       describe '.find!' do
-        context 'without certificates in Redis database' do
+        context 'without certificates in the cache' do
           it 'raises a exception' do
             expect{ described_class.find!(kid)}.
               to raise_error(Exceptions::NoCertificatesError)
           end
         end
-        context 'with certificates in Redis database' do
+        context 'with certificates in the cache' do
           it 'returns a OpenSSL::X509::Certificate when it finds the kid' do
             described_class.request
             expect(described_class.find!(kid)).to be_a(OpenSSL::X509::Certificate)
@@ -152,12 +152,12 @@ module FirebaseIdToken
       end
 
       describe '.ttl' do
-        it 'returns a positive number when has certificates in Redis', skip: !cache_store_supports_ttl do
+        it 'returns a positive number when has certificates in the cache', skip: !cache_store_supports_ttl do
           described_class.request
           expect(described_class.ttl).to be > 0
         end
 
-        it 'returns zero when has no certificates in Redis', skip: !cache_store_supports_ttl do
+        it 'returns zero when has no certificates in the cache', skip: !cache_store_supports_ttl do
           expect(described_class.ttl).to eq(0)
         end
 
