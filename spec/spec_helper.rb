@@ -11,6 +11,7 @@ require 'httparty'
 require 'jwt'
 require 'firebase_id_token'
 require 'pry'
+require './spec/support/certificates_shared_examples'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

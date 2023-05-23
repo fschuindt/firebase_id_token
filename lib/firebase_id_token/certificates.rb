@@ -30,8 +30,6 @@ module FirebaseIdToken
   #   FirebaseIdToken::Certificates.request! # Downloads certificates.
   #
   class Certificates
-    # A common cache store
-    attr_reader :cache_store
     # Certificates saved in the cache (JSON `String` or `nil`).
     attr_reader :local_certs
 
@@ -146,21 +144,17 @@ module FirebaseIdToken
     # time, use it to know when to request again.
     # @return [Fixnum]
     def self.ttl
-      if new.cache_store.respond_to?(:redis)
-        ttl = new.cache_store.redis.ttl('certificates')
-        return ttl < 0 ? 0 : ttl
-      end
-      # Not all cache stores supported by ActiveSupport::Cache support a TTL
-      # read on an entrye
-      raise Exceptions::UnsupportedCacheOperationError.new
+      # call a child class based on the configuration
+      return FirebaseIdToken::Certificates::Redis.ttl if FirebaseIdToken.configuration.redis
+      FirebaseIdToken::Certificates::ActiveSupport.ttl
     end
 
     # Sets two instance attributes: `:cach_store` and `:local_certs`. Those are
     # respectively a cache instance from {FirebaseIdToken::Configuration} and
     # the certificates in it.
     def initialize
-      @cache_store = FirebaseIdToken.configuration.cache_store
-      @local_certs = read_certificates
+      # this should not be called directly. Call a child class
+      raise NotImplementedError
     end
 
     # @see Certificates.request
@@ -176,29 +170,6 @@ module FirebaseIdToken
         save_certificates
       else
         raise Exceptions::CertificatesRequestError.new(code)
-      end
-    end
-
-    private
-
-    def read_certificates
-      certs = @cache_store.read 'certificates'
-      certs ? JSON.parse(certs) : {}
-    end
-
-    def save_certificates
-      @cache_store.write 'certificates', @request.body, expires_in: ttl
-      @local_certs = read_certificates
-    end
-
-    def ttl
-      cache_control = @request.headers['cache-control']
-      ttl = cache_control.match(/max-age=([0-9]+)/).captures.first.to_i
-
-      if ttl > 3600
-        ttl
-      else
-        raise Exceptions::CertificatesTtlError
       end
     end
   end

@@ -44,10 +44,19 @@ FirebaseIdToken.configure do |config|
 end
 ```
 
+You can use the old method of configuration as well. If you use this method, you'll have to proactively
+download certificates (see [Downloading Certificates](#downloading-certificates) below)
+```ruby
+FirebaseIdToken.configure do |config|
+  config.redis = Redis.new
+  config.project_ids = ['your-firebase-project-id']
+end
+```
+
 - A cache store instance inheriting from [ActiveSupport::Cache::Store](https://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html) must be supplied.
   - Examples:
     - `ActiveSupport::Cache::RedisCacheStore.new(Redis.new(host: '10.0.1.1', port: 6380, db: 15))`
-    - `ActiveSupport::Cache::RedisCacheStore.new(namespace: "firebase_auth")`
+    - `ActiveSupport::Cache::MemoryStore.new(namespace: "firebase_auth")`
     - `ActiveSupport::Cache::FileStore.new("cache", namespace: "firebase_auth")`
     - `Rails.cache`
 - `project_ids` must be an Array.
@@ -102,6 +111,8 @@ FirebaseIdToken::Certificates.find('ec8f292sd30224afac5c55540df66d1f999d')
 ```
 
 #### Downloading in Rails
+If you pass in the `cache_store` configuration option (see [configuration](#configuration)), the certificates will be
+requested at runtime when needed using `ActiveSupport::Cache.fetch()` and you can ignore this section.
 
 If you are using Rails, it's clever to download certificates in a cron task, you can use [whenever](https://github.com/javan/whenever).
 
