@@ -47,7 +47,7 @@ module FirebaseIdToken
     # @return [nil, Hash]
     # @see Certificates.request!
     def self.request
-      new.request
+      new_child.request
     end
 
     # Triggers a HTTPS request to Google's x509 certificates API. If it
@@ -61,7 +61,7 @@ module FirebaseIdToken
     # {Exceptions::CertificatesTtlError}. You are mostly like to never face it.
     # @return [Hash]
     def self.request!
-      new.request!
+      new_child.request!
     end
 
     # @deprecated Use only `request!` in favor of Ruby conventions.
@@ -71,7 +71,7 @@ module FirebaseIdToken
       warn 'WARNING: FirebaseIdToken::Certificates.request_anyway is '\
         'deprecated. Use FirebaseIdToken::Certificates.request! instead.'
 
-      new.request!
+      new_child.request!
     end
 
     # Returns `true` if there's certificates data in the cache, `false` otherwise.
@@ -80,7 +80,7 @@ module FirebaseIdToken
     #   FirebaseIdToken::Certificates.request
     #   FirebaseIdToken::Certificates.present? #=> true
     def self.present?
-      ! new.local_certs.empty?
+      ! new_child.local_certs.empty?
     end
 
     # Returns an array of hashes, each hash is a single `{key => value}` pair
@@ -94,7 +94,7 @@ module FirebaseIdToken
     #   certs = FirebaseIdToken::Certificates.all
     #   certs.first #=> {"1d6d01c7[...]" => #<OpenSSL::X509::Certificate[...]}
     def self.all
-      new.local_certs.map { |kid, cert|
+      new_child.local_certs.map { |kid, cert|
         { kid => OpenSSL::X509::Certificate.new(cert) } }
     end
 
@@ -110,7 +110,7 @@ module FirebaseIdToken
     #   cert = FirebaseIdToken::Certificates.find "1d6d01f4w7d54c7[...]"
     #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
     def self.find(kid, raise_error: false)
-      certs = new.local_certs
+      certs = new_child.local_certs
       raise Exceptions::NoCertificatesError if certs.empty?
 
       return OpenSSL::X509::Certificate.new certs[kid] if certs[kid]
@@ -145,8 +145,13 @@ module FirebaseIdToken
     # @return [Fixnum]
     def self.ttl
       # call a child class based on the configuration
-      return FirebaseIdToken::Certificates::Redis.ttl if FirebaseIdToken.configuration.redis
-      FirebaseIdToken::Certificates::ActiveSupport.ttl
+      klass = FirebaseIdToken.configuration.klass
+      klass.ttl
+    end
+
+    def self.new_child
+      klass = FirebaseIdToken.configuration.klass
+      klass.new
     end
 
     # Sets two instance attributes: `:cach_store` and `:local_certs`. Those are

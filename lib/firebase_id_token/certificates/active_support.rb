@@ -22,14 +22,45 @@ module FirebaseIdToken
     private
 
     def read_certificates
-      entry = cache_store.fetch('certificates', race_condition_ttl: RACE_CONDITION_TIME) do
-        request
+      entry = cache_store.read('certificates')
+      if entry.nil?
+        lock do
+          request!
+        end
+        entry = cache_store.read('certificates')
       end
       certs = {}
       certs = JSON.parse(JSON.parse(entry)["data"]) if entry
       certs
-    rescue StandardError
+    rescue StandardError => e
       return {}
+    end
+
+    # we can't use ActiveSupport's fetch, because we need to set the expiration time of
+    # the key based on a value we read from the request. This is a rudimentary mutex instead
+    def lock
+      acquire_lock
+      yield
+    ensure
+      release_lock
+    end
+
+    def acquire_lock
+      maybe_sleep
+      cache_store.write('certificate_lock', expires_in: 5.seconds)
+    end
+
+    def maybe_sleep
+      iteration = 0
+      while cache_store.exist?('certificate_lock')
+        iteration += 1
+        sleep 1
+        break if iteration > 5
+      end
+    end
+
+    def release_lock
+      cache_store.delete('certificate_lock')
     end
 
     def save_certificates
@@ -38,7 +69,7 @@ module FirebaseIdToken
       # will be expired before the certificate is
       cache_store.write 'certificates', { data: @request.body, expires_at: expires_at }.to_json,
         expires_in: (ttl - RACE_CONDITION_TIME)
-      @local_certs = read_certificates
+      @local_certs = @request.body
     end
 
     def ttl

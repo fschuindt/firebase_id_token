@@ -112,7 +112,7 @@ FirebaseIdToken::Certificates.find('ec8f292sd30224afac5c55540df66d1f999d')
 
 #### Downloading in Rails
 If you pass in the `cache_store` configuration option (see [configuration](#configuration)), the certificates will be
-requested at runtime when needed using `ActiveSupport::Cache.fetch()` and you can ignore this section.
+requested at runtime when needed and you can ignore this section.
 
 If you are using Rails, it's clever to download certificates in a cron task, you can use [whenever](https://github.com/javan/whenever).
 
