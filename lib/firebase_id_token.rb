@@ -1,14 +1,14 @@
-require 'redis'
-require 'redis-namespace'
 require 'httparty'
 require 'jwt'
 require 'active_support'
 require 'active_support/time'
+require 'active_support/cache'
 
 require 'firebase_id_token/version'
 require 'firebase_id_token/exceptions/no_certificates_error'
 require 'firebase_id_token/exceptions/certificates_request_error'
 require 'firebase_id_token/exceptions/certificates_ttl_error'
+require 'firebase_id_token/exceptions/unsupported_cache_operation_error'
 require 'firebase_id_token/exceptions/certificate_not_found'
 require 'firebase_id_token/configuration'
 require 'firebase_id_token/certificates'
@@ -30,20 +30,18 @@ require 'firebase_id_token/signature'
 #
 # ## Configuration
 #
-# You need to set your Firebase Project ID. Additionally you can set your Redis
-# server instance in case you don't use Redis defaults.
+# You need to set your Firebase Project ID and cache store.
 #
 # **WARNING:** Your `project_ids` must be a `Array`.
 # ```
 # FirebaseIdToken.configure do |config|
 #   config.project_ids = ['my-project-id', 'another-project-id']
-#   congig.redis = Redis.new(:host => "10.0.1.1", :port => 6380, :db => 15)
+#   congig.cache_store = ActiveSupport::Cache::RedisCacheStore.new
 # end
 # ```
 #
 # **Defaults**
 # + `project_ids` => `[]`
-# + `redis` => `Redis.new`
 #
 module FirebaseIdToken
   class << self
@@ -61,6 +59,13 @@ module FirebaseIdToken
 
   def self.configure
     yield configuration
+    # backward compatible with the config.redis = Redis.new setup that is the old way of configuing the gem
+    if configuration.redis
+      require 'firebase_id_token/certificates/redis'
+      configuration.cache_store = ActiveSupport::Cache::RedisCacheStore.new(redis: configuration.redis)
+    else
+      require 'firebase_id_token/certificates/active_support'
+    end
   end
 
   # Method for starting test mode.

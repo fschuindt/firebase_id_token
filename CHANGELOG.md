@@ -20,6 +20,7 @@ Nothing.
 - SimpleCov JSON formatter and `json` as dependency.
 
 ### Changed
+- Redis is no longer required. Any ActiveSupport cache will now work.
 - It won't default to `Redis.new` anymore. You must now provide Redis details during configuration. [Details here](https://github.com/fschuindt/firebase_id_token/issues/30).
 - Upgraded Redis to 5.0.6.
 - Upgraded Redis Namespace to 1.10.

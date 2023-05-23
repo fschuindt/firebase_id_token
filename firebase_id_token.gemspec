@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'A Firebase ID Token verifier.'
   spec.description   = "A Ruby gem to verify the signature of Firebase ID "\
-    "Tokens. It uses Redis to store Google's x509 certificates and manage "\
+    "Tokens. It uses ActiveSupport::Cache to store Google's x509 certificates and manage "\
     "their expiration time, so you don't need to request Google's API in "\
     "every execution and can access it as fast as reading from memory."
   spec.homepage      = 'https://github.com/fschuindt/firebase_id_token'
@@ -29,9 +29,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.22.0'
   spec.add_development_dependency 'simplecov_json_formatter', '~> 0.1.2'
   spec.add_development_dependency 'pry', '~> 0.14.2'
+  spec.add_development_dependency 'redis', '~> 5.0', '>= 5.0.6'
+  spec.add_development_dependency 'redis-namespace', '~> 1.10'
 
-  spec.add_runtime_dependency 'redis', '~> 5.0', '>= 5.0.6'
-  spec.add_runtime_dependency 'redis-namespace', '~> 1.10'
   spec.add_dependency 'httparty', '~> 0.21.0'
   spec.add_runtime_dependency 'jwt', '~> 2.7'
   spec.add_runtime_dependency 'activesupport', '~> 7.0', '>= 7.0.4.3'
