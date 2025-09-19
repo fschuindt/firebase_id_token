@@ -122,7 +122,12 @@ module FirebaseIdToken
     end
 
     def issuer_authorized?(payload)
-      issuers = @project_ids.map { |i| "https://securetoken.google.com/#{i}" }
+      issuers = @project_ids.flat_map do |project_id|
+        [
+          "https://securetoken.google.com/#{project_id}",
+          "https://session.firebase.google.com/#{project_id}"
+        ]
+      end
       issuers.include? payload['iss']
     end
   end
