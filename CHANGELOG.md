@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-07-28
+
 ### Added
 - Support for verifying Firebase Session Cookies with
   `FirebaseIdToken::Signature.verify(cookie, type: :session_cookie)`. Session
@@ -18,6 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [PR #43](https://github.com/fschuindt/firebase_id_token/pull/43), closes
   [issue #6](https://github.com/fschuindt/firebase_id_token/issues/6). The
   legacy `config.redis` configuration keeps working as before.
+- A warning on `README.md` that `FirebaseIdToken.test!` must never be called
+  outside of a test suite, as the fixture private key is public in this
+  repository.
+- [Dev] `ostruct` as a development dependency, as it's no longer a default
+  gem in Ruby >= 3.5 and Pry requires it when running the specs.
+
+### Fixed
+- `Signature.verify` raised `NoMethodError` when a correctly signed token had
+  no `sub` claim, even with `raise_error: false`. It now returns `nil` as
+  documented.
 
 ### Changed
 - Loosened the HTTParty dependency constraint to `>= 0.21, < 1.0`, allowing
@@ -174,6 +186,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2017-04-23
 *Version removed.*
 
+[4.0.0]: https://github.com/fschuindt/firebase_id_token/compare/3.0.0...4.0.0
 [3.0.0]: https://github.com/fschuindt/firebase_id_token/compare/2.5.2...3.0.0
 [2.5.2]: https://github.com/fschuindt/firebase_id_token/compare/2.5.1...2.5.2
 [2.5.1]: https://github.com/fschuindt/firebase_id_token/compare/2.5.0...2.5.1

@@ -21,7 +21,7 @@ gem install firebase_id_token
 
 or in your Gemfile
 ```
-gem 'firebase_id_token', '~> 3.0.0'
+gem 'firebase_id_token', '~> 4.0.0'
 ```
 then
 ```
