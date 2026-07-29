@@ -145,13 +145,15 @@ module FirebaseIdToken
     # @return [Fixnum]
     def self.ttl
       # call a child class based on the configuration
-      klass = FirebaseIdToken.configuration.klass
-      klass.ttl
+      FirebaseIdToken.configuration.klass.ttl
     end
 
+    # When called on Certificates itself, picks the store class from the
+    # configuration. When called on a subclass, instantiates that subclass.
     def self.new_child
-      klass = FirebaseIdToken.configuration.klass
-      klass.new
+      return new unless self == Certificates
+
+      FirebaseIdToken.configuration.klass.new
     end
 
     # Sets two instance attributes: `:cach_store` and `:local_certs`. Those are

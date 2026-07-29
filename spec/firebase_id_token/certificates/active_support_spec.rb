@@ -25,10 +25,10 @@ module FirebaseIdToken
     context 'RedisCacheStore' do
       before :each do
         allow(FirebaseIdToken.configuration).to receive(:cache_store).and_return(
-          ActiveSupport::Cache::RedisCacheStore.new)
+          ActiveSupport::Cache::RedisCacheStore.new(namespace: 'firebase_id_token_test'))
         FirebaseIdToken.configuration.cache_store.delete 'certificates'
       end
-      it_behaves_like 'a certificate store'
+      it_behaves_like 'a certificate store', lazy: true
     end
 
     context 'MemoryStore' do
@@ -37,7 +37,7 @@ module FirebaseIdToken
           ActiveSupport::Cache::MemoryStore.new(namespace: "firebase_auth"))
         FirebaseIdToken.configuration.cache_store.delete 'certificates'
       end
-      it_behaves_like 'a certificate store'
+      it_behaves_like 'a certificate store', lazy: true
     end
   end
 end

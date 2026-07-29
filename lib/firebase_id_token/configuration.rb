@@ -5,17 +5,14 @@ module FirebaseIdToken
 
   class Configuration
     attr_accessor :redis, :project_ids, :cache_store
+    attr_writer :certificates
 
     def initialize
       @project_ids = []
     end
 
     def certificates
-      klass
-    end
-
-    def certificates=(value)
-      @certificates = klass
+      @certificates || klass
     end
 
     def klass

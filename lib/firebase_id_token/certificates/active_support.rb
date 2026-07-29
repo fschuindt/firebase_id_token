@@ -47,7 +47,7 @@ module FirebaseIdToken
 
     def acquire_lock
       maybe_sleep
-      cache_store.write('certificate_lock', expires_in: 5.seconds)
+      cache_store.write('certificate_lock', true, expires_in: 5.seconds)
     end
 
     def maybe_sleep

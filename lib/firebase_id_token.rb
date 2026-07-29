@@ -12,6 +12,8 @@ require 'firebase_id_token/exceptions/unsupported_cache_operation_error'
 require 'firebase_id_token/exceptions/certificate_not_found'
 require 'firebase_id_token/configuration'
 require 'firebase_id_token/certificates'
+require 'firebase_id_token/certificates/active_support'
+require 'firebase_id_token/certificates/redis'
 require 'firebase_id_token/signature'
 
 # ## List of available methods
@@ -59,13 +61,6 @@ module FirebaseIdToken
 
   def self.configure
     yield configuration
-    # backward compatible with the config.redis = Redis.new setup that is the old way of configuing the gem
-    if configuration.redis
-      require 'firebase_id_token/certificates/redis'
-      configuration.cache_store = ActiveSupport::Cache::RedisCacheStore.new(redis: configuration.redis)
-    else
-      require 'firebase_id_token/certificates/active_support'
-    end
   end
 
   # Method for starting test mode.

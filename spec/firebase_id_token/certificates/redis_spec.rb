@@ -26,7 +26,12 @@ module FirebaseIdToken
     }
 
     before :each do
+      FirebaseIdToken.configure { |config| config.redis = ::Redis.new }
       redis.del 'certificates'
+    end
+
+    after :each do
+      FirebaseIdToken.reset
     end
 
     it_behaves_like 'a certificate store'

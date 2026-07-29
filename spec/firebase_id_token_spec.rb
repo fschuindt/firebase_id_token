@@ -5,7 +5,7 @@ RSpec.describe FirebaseIdToken do
 
   let (:mock_certificates) {
     allow(FirebaseIdToken::Certificates).to receive(:find).
-      with(an_instance_of(String)) {
+      with(an_instance_of(String), any_args) {
         OpenSSL::X509::Certificate.new(jwt['certificate']) }
   }
 

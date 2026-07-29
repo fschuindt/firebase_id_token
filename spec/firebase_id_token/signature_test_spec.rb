@@ -13,6 +13,10 @@ module FirebaseIdToken
       FirebaseIdToken.test!
     end
 
+    after :each do
+      FirebaseIdToken.reset
+    end
+
     describe '#verify' do
 
       it 'test mode is valid' do
