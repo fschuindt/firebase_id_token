@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+  pull_request:
 
 jobs:
   test:
@@ -25,10 +26,3 @@ jobs:
         run: bundle install
       - name: Run tests
         run: bundle exec rspec
-      - name: Publish code coverage
-        uses: paambaati/codeclimate-action@v4.0.0
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        with:
-          debug: true
-          coverageLocations: ${{github.workspace}}/coverage/coverage.json:simplecov

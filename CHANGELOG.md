@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Loosened the HTTParty dependency constraint to `>= 0.21, < 1.0`, allowing
   newer releases. [Issue #44](https://github.com/fschuindt/firebase_id_token/issues/44).
+- CI now also runs on pull requests.
+
+### Removed
+- The Code Climate coverage publishing step and badges, as the service and
+  its GitHub Action are defunct. SimpleCov still reports coverage on every
+  test run.
 
 ## [3.0.0] - 2023-04-11
 
