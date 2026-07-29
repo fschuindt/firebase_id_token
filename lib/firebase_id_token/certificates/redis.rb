@@ -3,7 +3,8 @@ module FirebaseIdToken
   class Certificates::Redis < Certificates
     attr_reader :redis
 
-    def initialize
+    def initialize(source: :id_token)
+      @source = source
       @redis = ::Redis::Namespace.new('firebase_id_token',
         redis: FirebaseIdToken.configuration.redis)
       @local_certs = read_certificates
@@ -13,20 +14,20 @@ module FirebaseIdToken
     # meaning no certificates.* It's the same as the certificates expiration
     # time, use it to know when to request again.
     # @return [Fixnum]
-    def self.ttl
-      ttl = new.redis.ttl('certificates')
+    def self.ttl(source: :id_token)
+      ttl = new(source: source).redis.ttl(CACHE_KEYS.fetch(source))
       ttl < 0 ? 0 : ttl
     end
 
     private
 
     def read_certificates
-      certs = @redis.get 'certificates'
+      certs = @redis.get cache_key
       certs ? JSON.parse(certs) : {}
     end
 
     def save_certificates
-      @redis.setex 'certificates', ttl, @request.body
+      @redis.setex cache_key, ttl, @request.body
       @local_certs = read_certificates
     end
 

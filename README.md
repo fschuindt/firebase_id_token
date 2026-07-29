@@ -176,6 +176,21 @@ FirebaseIdToken::Signature.verify('aaaaaa')
 => nil
 ```
 
+#### Verifying Session Cookies
+
+[Firebase Session Cookies](https://firebase.google.com/docs/auth/admin/manage-cookies) are issued by `https://session.firebase.google.com` and signed by a different certificate set than ID Tokens. Pass `type: :session_cookie` to verify one:
+
+```ruby
+FirebaseIdToken::Signature.verify(session_cookie, type: :session_cookie)
+=> {"iss"=>"https://session.firebase.google.com/firebase-id-token", "name"=>"Bob Test", [...]}
+```
+
+When using the `cache_store` configuration, the Session Cookie certificates are downloaded automatically on the first verification, just like the ID Token ones. If you are on the legacy Redis configuration and download certificates with a cron task, you also need to request the Session Cookie certificates:
+
+```ruby
+FirebaseIdToken::Certificates.request(source: :session_cookie)
+```
+
 #### WARNING!
 
 ##### Expired tokens can point to long gone certificates

@@ -4,14 +4,15 @@ module FirebaseIdToken
     attr_reader :cache_store
     RACE_CONDITION_TIME = 5.seconds
 
-    def initialize
+    def initialize(source: :id_token)
+      @source = source
       @cache_store = ::FirebaseIdToken.configuration.cache_store
       @local_certs = read_certificates
     end
 
-    def self.ttl
+    def self.ttl(source: :id_token)
       current_time = Time.now.to_i
-      entry = new.cache_store.read 'certificates'
+      entry = new(source: source).cache_store.read CACHE_KEYS.fetch(source)
       if entry
         expires_at = JSON.parse(entry)["expires_at"]
         return expires_at - current_time < 0 ? 0 : expires_at - current_time
@@ -22,12 +23,12 @@ module FirebaseIdToken
     private
 
     def read_certificates
-      entry = cache_store.read('certificates')
+      entry = cache_store.read(cache_key)
       if entry.nil?
         lock do
           request!
         end
-        entry = cache_store.read('certificates')
+        entry = cache_store.read(cache_key)
       end
       certs = {}
       certs = JSON.parse(JSON.parse(entry)["data"]) if entry
@@ -47,12 +48,12 @@ module FirebaseIdToken
 
     def acquire_lock
       maybe_sleep
-      cache_store.write('certificate_lock', true, expires_in: 5.seconds)
+      cache_store.write(lock_key, true, expires_in: 5.seconds)
     end
 
     def maybe_sleep
       iteration = 0
-      while cache_store.exist?('certificate_lock')
+      while cache_store.exist?(lock_key)
         iteration += 1
         sleep 1
         break if iteration > 5
@@ -60,14 +61,18 @@ module FirebaseIdToken
     end
 
     def release_lock
-      cache_store.delete('certificate_lock')
+      cache_store.delete(lock_key)
+    end
+
+    def lock_key
+      "#{cache_key}_lock"
     end
 
     def save_certificates
       expires_at = Time.now.to_i + ttl
       # set the expiration of the key to the certification expiration - RACE_CONDITION_TIME, so that the entry
       # will be expired before the certificate is
-      cache_store.write 'certificates', { data: @request.body, expires_at: expires_at }.to_json,
+      cache_store.write cache_key, { data: @request.body, expires_at: expires_at }.to_json,
         expires_in: (ttl - RACE_CONDITION_TIME)
       @local_certs = @request.body
     end

@@ -31,6 +31,12 @@ module FirebaseIdToken
     # [here](https://goo.gl/uOK5Jx).
     JWT_DEFAULTS = { algorithm: 'RS256', verify_iat: true }
 
+    # Issuer base URL of each token type.
+    ISSUER_BASE_URLS = {
+      id_token: 'https://securetoken.google.com',
+      session_cookie: 'https://session.firebase.google.com'
+    }.freeze
+
     # Returns the decoded JWT hash payload of the Firebase ID Token if the
     # signature in the token matches with one of the certificates downloaded
     # by {FirebaseIdToken::Certificates.request}, returns `nil` otherwise.
@@ -49,18 +55,26 @@ module FirebaseIdToken
     #   FirebaseIdToken::Signature
     #     .verify(token, raise_error: Rails.env.development?)
     #
+    # Use `type: :session_cookie` to verify a Firebase Session Cookie instead
+    # of an ID Token. Session Cookies are issued by
+    # `https://session.firebase.google.com` and signed by a different
+    # certificate set. Example:
+    #
+    #   FirebaseIdToken::Signature.verify(cookie, type: :session_cookie)
+    #
     # @param raise_error [Boolean] default: false
+    # @param type [Symbol] `:id_token` (default) or `:session_cookie`
     # @return [nil, Hash]
-    def self.verify(jwt_token, raise_error: false)
-      new(jwt_token, raise_error: raise_error).verify
+    def self.verify(jwt_token, raise_error: false, type: :id_token)
+      new(jwt_token, raise_error: raise_error, type: type).verify
     end
 
     # Equivalent to `.verify(jwt_token, raise_error: true)`.
     #
     # @see {Signature.verify}
     # @return [Hash]
-    def self.verify!(jwt_token)
-      new(jwt_token, raise_error: true).verify
+    def self.verify!(jwt_token, type: :id_token)
+      new(jwt_token, raise_error: true, type: type).verify
     end
 
     attr_accessor :firebase_id_token_certificates
@@ -68,8 +82,9 @@ module FirebaseIdToken
     # Loads attributes: `:project_ids` from {FirebaseIdToken::Configuration},
     # and `:kid`, `:jwt_token` from the related `jwt_token`.
     # @param [String] jwt_token Firebase ID Token
-    def initialize(jwt_token, raise_error: false)
+    def initialize(jwt_token, raise_error: false, type: :id_token)
       @raise_error = raise_error
+      @type = type
       @project_ids = FirebaseIdToken.configuration.project_ids
       @kid = extract_kid(jwt_token)
       @jwt_token = jwt_token
@@ -78,7 +93,8 @@ module FirebaseIdToken
 
     # @see Signature.verify
     def verify
-      certificate = firebase_id_token_certificates.find(@kid, raise_error: @raise_error)
+      certificate = firebase_id_token_certificates.find(
+        @kid, raise_error: @raise_error, source: @type)
       return unless certificate
 
       payload = decode_jwt_payload(@jwt_token, certificate.public_key)
@@ -122,12 +138,8 @@ module FirebaseIdToken
     end
 
     def issuer_authorized?(payload)
-      issuers = @project_ids.flat_map do |project_id|
-        [
-          "https://securetoken.google.com/#{project_id}",
-          "https://session.firebase.google.com/#{project_id}"
-        ]
-      end
+      base_url = ISSUER_BASE_URLS.fetch(@type)
+      issuers = @project_ids.map { |i| "#{base_url}/#{i}" }
       issuers.include? payload['iss']
     end
   end

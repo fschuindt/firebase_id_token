@@ -8,7 +8,8 @@ module FirebaseIdToken
     let(:mock_certificates) do
       allow(Certificates)
         .to(receive(:find))
-        .with(an_instance_of(String), raise_error: raise_certificates_error)
+        .with(an_instance_of(String), raise_error: raise_certificates_error,
+          source: :id_token)
         .and_return(OpenSSL::X509::Certificate.new(jwt['certificate']))
     end
 

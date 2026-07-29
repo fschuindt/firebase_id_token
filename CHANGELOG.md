@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support for verifying Firebase Session Cookies with
+  `FirebaseIdToken::Signature.verify(cookie, type: :session_cookie)`. Session
+  Cookie certificates are downloaded from their own Google API URL and cached
+  apart from the ID Token ones.
+  [PR #46](https://github.com/fschuindt/firebase_id_token/pull/46).
 - Support for any `ActiveSupport::Cache` store through the new
   `config.cache_store` configuration, with lazy certificate download on cache
   miss, removing the need for Redis and scheduled certificate requests.

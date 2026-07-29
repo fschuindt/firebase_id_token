@@ -33,9 +33,26 @@ module FirebaseIdToken
     # Certificates saved in the cache (JSON `String` or `nil`).
     attr_reader :local_certs
 
-    # Google's x509 certificates API URL.
+    # Certificate source (`:id_token` or `:session_cookie`).
+    attr_reader :source
+
+    # Google's x509 certificates API URL for ID Tokens.
     URL = 'https://www.googleapis.com/robot/v1/metadata/x509/'\
       'securetoken@system.gserviceaccount.com'
+
+    # Google's x509 certificates API URL for Session Cookies. Session Cookies
+    # are signed by a different key set than ID Tokens.
+    SESSION_COOKIE_URL = 'https://www.googleapis.com/identitytoolkit/v3/'\
+      'relyingparty/publicKeys'
+
+    # Certificates API URL of each source.
+    URLS = { id_token: URL, session_cookie: SESSION_COOKIE_URL }.freeze
+
+    # Cache key of each source, so both certificate sets live side by side.
+    CACHE_KEYS = {
+      id_token: 'certificates',
+      session_cookie: 'session_cookie_certificates'
+    }.freeze
 
     # Calls {.request!} only if there are no certificates in the cache. It will
     # return `nil` otherwise.
@@ -44,10 +61,11 @@ module FirebaseIdToken
     # fails or {Exceptions::CertificatesTtlError} when Google responds with a
     # low TTL, check out {.request!} for more info.
     #
+    # @param [Symbol] source `:id_token` (default) or `:session_cookie`
     # @return [nil, Hash]
     # @see Certificates.request!
-    def self.request
-      new_child.request
+    def self.request(source: :id_token)
+      new_child(source: source).request
     end
 
     # Triggers a HTTPS request to Google's x509 certificates API. If it
@@ -59,9 +77,10 @@ module FirebaseIdToken
     # This is really rare to happen, but Google may respond with a low TTL
     # certificate. This is a `SecurityError` and will raise a
     # {Exceptions::CertificatesTtlError}. You are mostly like to never face it.
+    # @param [Symbol] source `:id_token` (default) or `:session_cookie`
     # @return [Hash]
-    def self.request!
-      new_child.request!
+    def self.request!(source: :id_token)
+      new_child(source: source).request!
     end
 
     # @deprecated Use only `request!` in favor of Ruby conventions.
@@ -79,8 +98,8 @@ module FirebaseIdToken
     #   FirebaseIdToken::Certificates.present? #=> false
     #   FirebaseIdToken::Certificates.request
     #   FirebaseIdToken::Certificates.present? #=> true
-    def self.present?
-      ! new_child.local_certs.empty?
+    def self.present?(source: :id_token)
+      ! new_child(source: source).local_certs.empty?
     end
 
     # Returns an array of hashes, each hash is a single `{key => value}` pair
@@ -93,8 +112,8 @@ module FirebaseIdToken
     #   FirebaseIdToken::Certificates.request
     #   certs = FirebaseIdToken::Certificates.all
     #   certs.first #=> {"1d6d01c7[...]" => #<OpenSSL::X509::Certificate[...]}
-    def self.all
-      new_child.local_certs.map { |kid, cert|
+    def self.all(source: :id_token)
+      new_child(source: source).local_certs.map { |kid, cert|
         { kid => OpenSSL::X509::Certificate.new(cert) } }
     end
 
@@ -109,8 +128,8 @@ module FirebaseIdToken
     #   FirebaseIdToken::Certificates.request
     #   cert = FirebaseIdToken::Certificates.find "1d6d01f4w7d54c7[...]"
     #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
-    def self.find(kid, raise_error: false)
-      certs = new_child.local_certs
+    def self.find(kid, raise_error: false, source: :id_token)
+      certs = new_child(source: source).local_certs
       raise Exceptions::NoCertificatesError if certs.empty?
 
       return OpenSSL::X509::Certificate.new certs[kid] if certs[kid]
@@ -135,31 +154,31 @@ module FirebaseIdToken
     #   FirebaseIdToken::Certificates.request
     #   cert = FirebaseIdToken::Certificates.find! "1d6d01f4w7d54c7[...]"
     #   #=> <OpenSSL::X509::Certificate: subject=#<OpenSSL [...]
-    def self.find!(kid)
-      find(kid, raise_error: true)
+    def self.find!(kid, source: :id_token)
+      find(kid, raise_error: true, source: source)
     end
 
     # Returns the current certificates TTL (Time-To-Live) in seconds. *Zero
     # meaning no certificates.* It's the same as the certificates expiration
     # time, use it to know when to request again.
     # @return [Fixnum]
-    def self.ttl
+    def self.ttl(source: :id_token)
       # call a child class based on the configuration
-      FirebaseIdToken.configuration.klass.ttl
+      FirebaseIdToken.configuration.klass.ttl(source: source)
     end
 
     # When called on Certificates itself, picks the store class from the
     # configuration. When called on a subclass, instantiates that subclass.
-    def self.new_child
-      return new unless self == Certificates
+    def self.new_child(source: :id_token)
+      return new(source: source) unless self == Certificates
 
-      FirebaseIdToken.configuration.klass.new
+      FirebaseIdToken.configuration.klass.new(source: source)
     end
 
     # Sets two instance attributes: `:cach_store` and `:local_certs`. Those are
     # respectively a cache instance from {FirebaseIdToken::Configuration} and
     # the certificates in it.
-    def initialize
+    def initialize(source: :id_token)
       # this should not be called directly. Call a child class
       raise NotImplementedError
     end
@@ -171,13 +190,21 @@ module FirebaseIdToken
 
     # @see Certificates.request!
     def request!
-      @request = HTTParty.get URL
+      @request = HTTParty.get URLS.fetch(@source)
       code = @request.code
       if code == 200
         save_certificates
       else
         raise Exceptions::CertificatesRequestError.new(code)
       end
+    end
+
+    private
+
+    # Cache key of the certificate source, so ID Token and Session Cookie
+    # certificates never mix.
+    def cache_key
+      CACHE_KEYS.fetch(@source)
     end
   end
 end
