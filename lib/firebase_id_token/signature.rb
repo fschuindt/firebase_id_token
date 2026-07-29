@@ -129,7 +129,7 @@ module FirebaseIdToken
       still_valid?(payload) &&
       @project_ids.include?(payload['aud']) &&
       issuer_authorized?(payload) &&
-      ! payload['sub'].empty?
+      ! payload['sub'].to_s.empty?
     end
 
     def still_valid?(payload)
