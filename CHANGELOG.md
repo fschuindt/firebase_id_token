@@ -6,7 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing.
+### Added
+- Support for any `ActiveSupport::Cache` store through the new
+  `config.cache_store` configuration, with lazy certificate download on cache
+  miss, removing the need for Redis and scheduled certificate requests.
+  [PR #43](https://github.com/fschuindt/firebase_id_token/pull/43), closes
+  [issue #6](https://github.com/fschuindt/firebase_id_token/issues/6). The
+  legacy `config.redis` configuration keeps working as before.
+
+### Changed
+- Loosened the HTTParty dependency constraint to `>= 0.21, < 1.0`, allowing
+  newer releases. [Issue #44](https://github.com/fschuindt/firebase_id_token/issues/44).
 
 ## [3.0.0] - 2023-04-11
 

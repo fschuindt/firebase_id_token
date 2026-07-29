@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'redis', '~> 5.0', '>= 5.0.6'
   spec.add_development_dependency 'redis-namespace', '~> 1.10'
 
-  spec.add_dependency 'httparty', '~> 0.21.0'
+  spec.add_dependency 'httparty', '>= 0.21', '< 1.0'
   spec.add_runtime_dependency 'jwt', '~> 2.7'
   spec.add_runtime_dependency 'activesupport', '~> 7.0', '>= 7.0.4.3'
   spec.add_runtime_dependency 'json', '~> 2.6', '>= 2.6.3'
