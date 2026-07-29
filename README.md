@@ -255,6 +255,12 @@ Just run:
 FirebaseIdToken.test!
 ```
 
+> **Warning**
+> `FirebaseIdToken.test!` replaces signature verification with a fixture
+> certificate whose private key is publicly available in this repository.
+> Never call it outside of your test suite. An application running in test
+> mode will accept forged tokens crafted by anyone.
+
 By using this mode, the following methods become available.
 
 ```ruby
