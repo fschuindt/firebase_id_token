@@ -1,6 +1,6 @@
 # Ruby Firebase ID Token verifier
 
-[![Actions Status](https://github.com/fschuindt/firebase_id_token/workflows/Test/badge.svg?branch=master)](https://github.com/fschuindt/firebase_id_token/actions?query=workflow%3ATest)
+[![Actions Status](https://github.com/fschuindt/firebase_id_token/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/fschuindt/firebase_id_token/actions/workflows/test.yml)
 
 A Ruby gem to verify the signature of Firebase ID Tokens (JWT). It uses ActiveSupport::Cache to store Google's x509 certificates and manage their expiration time, so you don't need to request Google's API in every execution and can access it as fast as reading from memory.
 
