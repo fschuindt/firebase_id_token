@@ -5,7 +5,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-Nothing.
+
+## [4.1.0] - 2026-09-04
+
+### Added
+- Support for `jwt` 3.x. The dependency constraint is now `>= 2.10, < 4`.
+  [PR #49](https://github.com/fschuindt/firebase_id_token/pull/49).
+- Support for Rails 8. The `activesupport` dependency constraint is now
+  `>= 7.0.4.3, < 9`. [PR #49](https://github.com/fschuindt/firebase_id_token/pull/49).
+- CI now runs the test suite against both `jwt` 2.x and 3.x.
+
+### Changed
+- Raised the minimum `httparty` to `0.24.0` and the minimum `jwt` to `2.10`,
+  so a lockfile can no longer resolve to versions affected by
+  [CVE-2025-68696](https://github.com/advisories/GHSA-hm5p-x4rq-38w4) and
+  [CVE-2026-45363](https://github.com/advisories/GHSA-c32j-vqhx-rx3x). This
+  gem was not exploitable through either issue: it requests a fixed Google
+  URL and verifies `RS256` signatures with a certificate public key, but the
+  floor lets dependency scanners rest.
+- The test fixture used by `FirebaseIdToken.test!` (private key, certificate
+  and sample tokens) was regenerated with a 2048-bit RSA key, as `jwt` 3.x
+  refuses to sign with shorter keys. Test suites that encode tokens with
+  `FirebaseIdToken::Testing::Certificates.private_key` keep working; anything
+  hardcoding the old key or certificate must be updated.
 
 ## [4.0.0] - 2026-07-28
 
