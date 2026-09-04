@@ -7,8 +7,15 @@ on:
 
 jobs:
   test:
-    name: "Run Tests"
+    name: "Run Tests (JWT ${{ matrix.jwt }})"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jwt:
+          - "~> 2.10"
+          - "~> 3.0"
+    env:
+      JWT_VERSION: "${{ matrix.jwt }}"
     services:
       redis:
         image: redis
